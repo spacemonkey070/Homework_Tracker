@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homework Calendar</title>
+    <link rel="stylesheet" href="CalenderStyle.css">
+</head>
+
+<body>    
+    <div id="cal-header">
+        <h1 id="month-label">Homework Calender</h1>
+        <div id="cal-controls">
+            <button onclick="prevMonth()">Previous</button>
+            <button onclick="nextMonth()">Next</button>
+        </div>
+    </div>
+
+    <div id="hamburger">&#9776;</div>
+
+    <div id="sidebar">
+        <h2>Menu</h2>
+        <button onclick="window.location.href='../index.html'">Homework List</button>
+        <button onclick="window.location.href='../classes/ClassIndex.html'">Classes</button>
+        <button onclick="window.location.href='CalenderIndex.html'">Calendar</button>
+    </div>
+
+
+    <div id="calendar"></div>
+    <script src="CalenderScript.js"></script>
+</body>
+</html>
