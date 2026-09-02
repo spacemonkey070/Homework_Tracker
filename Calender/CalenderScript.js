@@ -7,7 +7,11 @@ function buildCalendar() {
     const monthLabel = document.getElementById("month-label");
 
     // Homework data
-    const homework = JSON.parse(localStorage.getItem("homework")) || []
+    const homework = (JSON.parse(localStorage.getItem("homework")) || [])
+        .map(hw => ({ 
+            ...hw, 
+            finished: hw.finished === true || hw.finished === "true" 
+        }))
         .filter(hw => !hw.finished);
 
     if (!calendar) return;
