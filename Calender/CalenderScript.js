@@ -6,15 +6,15 @@ function buildCalendar() {
     const calendar = document.getElementById("calendar");
     const monthLabel = document.getElementById("month-label");
 
-    if (!calendar) return;
-
-    // Clear old calendar
-    calendar.innerHTML = "";
-
     // Homework data
     const homework = JSON.parse(localStorage.getItem("homework")) || []
         .filter(hw => !hw.finished);
 
+    if (!calendar) return;
+
+    // Clear old calendar
+    calendar.innerHTML = "";
+    
     // Month name
     const monthNames = [
         "January","February","March","April","May","June",
