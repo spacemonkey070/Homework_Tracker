@@ -116,8 +116,7 @@ button.finish-btn {
 
 .hw-date {
     display:flex;
-    top: 50%;
-    right: 5%;
+    gap: 100px;
 }
 
 .hw-info {
