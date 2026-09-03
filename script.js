@@ -49,8 +49,6 @@ function renderHW() {
                 <div class="hw-details">
                     <span class="hw-class"><strong>${hw.class}</strong></span>
                     <span class="hw-name">${hw.name}</span>
-                </div>
-                <div class="hw-date">
                     <span class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</span>
                 </div>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>

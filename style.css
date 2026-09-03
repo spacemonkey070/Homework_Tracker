@@ -114,11 +114,6 @@ button.finish-btn {
     align-items: center;
 }
 
-.hw-date {
-    display:flex;
-    gap: 100px;
-}
-
 .hw-info {
     margin-top: 8px;
 }
