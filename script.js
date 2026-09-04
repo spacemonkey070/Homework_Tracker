@@ -54,7 +54,7 @@ function renderHW() {
             </div>
             <p>${hw.info}</p>
 
-            <span class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</span>
+            <div class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</div>
 
             <button class="delete-btn">🗑️</button>
         `;
