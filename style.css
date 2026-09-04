@@ -128,14 +128,16 @@ button.finish-btn {
 }
 
 .delete-btn {
-    align-self: flex-end;
-    margin-top: 10px;
+    position: absolute;
+    bottom: 8px;
+    left: 12px;
     background: transparent;
     border: none;
     font-size: 20px;
     cursor: pointer;
     color: #444;
 }
+
 
 .delete-btn:hover {
     color: red;
