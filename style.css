@@ -73,6 +73,8 @@ h1{
     margin-bottom: 10px;
     background: transparent;
     border-left: 10px solid transparent;
+    position: relative;
+    padding-bottom: 40px; 
 }
 
 .hw-due {
