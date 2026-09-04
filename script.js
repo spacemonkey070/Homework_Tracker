@@ -49,11 +49,13 @@ function renderHW() {
                 <div class="hw-details">
                     <span class="hw-class"><strong>${hw.class}</strong></span>
                     <span class="hw-name">${hw.name}</span>
-                    <span class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</span>
                 </div>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
             <p>${hw.info}</p>
+
+            <span class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</span>
+
             <button class="delete-btn">🗑️</button>
         `;
 
