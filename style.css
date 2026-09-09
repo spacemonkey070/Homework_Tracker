@@ -193,7 +193,7 @@ button.finish-btn {
 
 #unfinished-container,
 #finished-container {
-    display: block;
+    display: none;
 }
 
 .arrow {
