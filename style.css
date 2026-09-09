@@ -11,9 +11,13 @@ h1{
 #class-input,
 #name-input,
 #date-input,
-#info-input,
-#info-type {
+#info-input {
     width: 500px;
+}
+
+#info-type {
+    align-self: flex-start;
+    width: 120px;
 }
 
 #progress-circle {
