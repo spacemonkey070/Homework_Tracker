@@ -127,6 +127,13 @@ button.finish-btn {
     margin-top: 8px;
 }
 
+#info-type {
+    width: 150px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+
 .delete-btn {
     position: absolute;
     bottom: 8px;
@@ -137,7 +144,6 @@ button.finish-btn {
     cursor: pointer;
     color: #444;
 }
-
 
 .delete-btn:hover {
     color: red;
