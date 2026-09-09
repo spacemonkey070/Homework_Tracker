@@ -46,54 +46,46 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 
 
 function renderHW() {
+    function renderHW() {
     homework.sort((a, b) => {
         if (a.finished !== b.finished) return a.finished ? 1 : -1;
         return new Date(a.due) - new Date(b.due);
     });
 
-    const list = document.getElementById("hw-list");
-    list.innerHTML = "";
+    const unfinished = document.getElementById("unfinished-container");
+    const finished = document.getElementById("finished-container");
+
+    unfinished.innerHTML = "";
+    finished.innerHTML = "";
 
     homework.forEach((hw, index) => {
         const item = document.createElement("div");
         item.classList.add("hw-item");
         item.classList.add(hw.finished ? "hw-green" : "hw-red");
 
-        let infoDisplay = hw.info;
-        if (hw.infoType === "link") {
-            infoDisplay = `<a href="${hw.info}" target="_blank">Open Link</a>`;
-        }
-
         item.innerHTML = `
             <div class="hw-top">
-                <div class="hw-details">
-                    <span class="hw-class"><strong>${hw.class}</strong></span>
-                    <span class="hw-name">${hw.name}</span>
-                </div>
+                <strong>${hw.class}: ${hw.name}</strong>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
-            <p>${infoDisplay}</p>
-
-            <div class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</div>
-
-            <button class="delete-btn">🗑️</button>
+            <p><strong>Due:</strong> ${hw.due}</p>
+            <p>${hw.info}</p>
         `;
 
         item.querySelector(".finish-btn").addEventListener("click", () =>{
             hw.finished = !hw.finished;
-            saveHW();
-            renderHW();
-        });
-        item.querySelector(".delete-btn").addEventListener("click", () => {
-            homework.splice(index, 1);
-            saveHW();
             renderHW();
         });
 
-        list.appendChild(item);
+        if (hw.finished) {
+            finished.appendChild(item);
+        } else {
+            unfinished.appendChild(item);
+        }
     });
 
     updateProgress();
+    }
 }
 
 
