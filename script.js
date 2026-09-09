@@ -138,11 +138,21 @@ document.addEventListener("DOMContentLoaded", loadClassesIntoDropdown);
 document.getElementById("unfinished-toggle").addEventListener("click", () => {
     const box = document.getElementById("unfinished-container");
     const current = getComputedStyle(box).display;
-box.style.display = current === "none" ? "block" : "none";
+
+    const arrow = document.querySelector("#unfinished-toggle .arrow");
+    const isClosed = current === "none";
+
+    arrow.classList.toggle("closed", isClosed);
+    box.style.display = current === "none" ? "block" : "none";
 });
 
 document.getElementById("finished-toggle").addEventListener("click", () => {
     const box = document.getElementById("finished-container");
     const current = getComputedStyle(box).display;
-box.style.display = current === "none" ? "block" : "none";
+
+    const arrow = document.querySelector("#finished-toggle .arrow");
+    const isClosed = current === "none";
+    
+    arrow.classList.toggle("closed", isClosed);
+    box.style.display = current === "none" ? "block" : "none";
 });

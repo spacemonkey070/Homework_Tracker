@@ -196,3 +196,13 @@ button.finish-btn {
     display: block;
 }
 
+.arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    margin-right: 8px;
+}
+
+.arrow.closed {
+    transform: rotate(-90deg);
+}
+
