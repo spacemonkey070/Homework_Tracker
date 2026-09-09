@@ -46,7 +46,6 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 
 
 function renderHW() {
-    function renderHW() {
     homework.sort((a, b) => {
         if (a.finished !== b.finished) return a.finished ? 1 : -1;
         return new Date(a.due) - new Date(b.due);
@@ -85,8 +84,8 @@ function renderHW() {
     });
 
     updateProgress();
-    }
 }
+
 
 
 function updateProgress() {
