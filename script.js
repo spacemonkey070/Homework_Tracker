@@ -143,7 +143,7 @@ document.getElementById("unfinished-toggle").addEventListener("click", () => {
 
     const isOpen = current !== "none";  
 
-    arrow.classList.toggle("closed", !isOpen);
+    arrow.classList.toggle("closed", isOpen);
 
     box.style.display = isOpen ? "none" : "block";
 });
@@ -156,7 +156,7 @@ document.getElementById("finished-toggle").addEventListener("click", () => {
 
     const isOpen = current !== "none";   
 
-    arrow.classList.toggle("closed", !isOpen);
+    arrow.classList.toggle("closed", isOpen);
 
     box.style.display = isOpen ? "none" : "block";
 });
