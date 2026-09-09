@@ -127,6 +127,13 @@ button.finish-btn {
     margin-top: 8px;
 }
 
+#info-type {
+    width: 120px;
+    padding: 4px 6px;
+    font-size: 13px;
+}
+
+
 .delete-btn {
     position: absolute;
     bottom: 8px;
