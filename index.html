@@ -32,7 +32,11 @@
         <select id="class-input" placeholder="Class"></select>
         <input type="text" id="name-input" placeholder="Homework Name" required>
         <input type="date" id="date-input" placeholder="mm/dd/yyyy" required>
-        <textarea id="info-input" placeholder="Important Info"></textarea>
+        <select id="info-type">
+            <option value="description">Description</option>
+            <option value="link">Link</option>
+        </select>
+        <input type="text" id="info-input" placeholder="Description or Link">
         <button type="submit">Add Homework</button>
     </form>
 

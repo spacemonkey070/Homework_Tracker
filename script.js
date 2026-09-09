@@ -14,21 +14,31 @@ function formatDate(iso) {
     return `${month}/${day}/${year}`;
 }
 
-document.getElementById("hw-form").addEventListener("submit", function(e) {
-    e.preventDefault();
+const infoType = document.getElementById("info-type").value;
+const infoInput = document.getElementById("info-input").value.trim();
 
-    const hw = {
-        class: document.getElementById("class-input").value,
-        name: document.getElementById("name-input").value,
-        due: document.getElementById("date-input").value,
-        info: document.getElementById("info-input").value,
-        finished: false
-    };
+let infoFinal = infoInput;
+
+if (infoType === "link") {
+    if (!infoInput.startsWith("http://") && !infoInput.startsWith("https://")) {
+        infoFinal = "https://" + infoInput;
+    }
+}
+
+const hw = {
+    class: document.getElementById("class-input").value,
+    name: document.getElementById("name-input").value,
+    due: document.getElementById("date-input").value,
+    infoType: infoType,
+    info: infoFinal,
+    finished: false
+};
+
     homework.push(hw);
     saveHW();
     renderHW();
     this.reset();
-});
+
 
 function renderHW() {
     homework.sort((a, b) => {
@@ -44,6 +54,11 @@ function renderHW() {
         item.classList.add("hw-item");
         item.classList.add(hw.finished ? "hw-green" : "hw-red");
 
+        let infoDisplay = hw.info;
+        if (hw.infoType === "link") {
+            infoDisplay = `<a href="${hw.info}" target="_blank">Open Link</a>`;
+        }
+
         item.innerHTML = `
             <div class="hw-top">
                 <div class="hw-details">
@@ -52,7 +67,7 @@ function renderHW() {
                 </div>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
-            <p>${hw.info}</p>
+            <p>${infoDisplay}</p>
 
             <div class="hw-due"><strong>Due:</strong> ${formatDate(hw.due)}</div>
 
