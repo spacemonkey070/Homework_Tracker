@@ -135,12 +135,14 @@ function loadClassesIntoDropdown() {
 
 document.addEventListener("DOMContentLoaded", loadClassesIntoDropdown);
 
-    document.getElementById("unfinished-toggle").addEventListener("click", () => {
-        const box = document.getElementById("unfinished-container");
-        box.style.display = box.style.display === "none" ? "block" : "none";
-    });
+document.getElementById("unfinished-toggle").addEventListener("click", () => {
+    const box = document.getElementById("unfinished-container");
+    const current = getComputedStyle(box).display;
+box.style.display = current === "none" ? "block" : "none";
+});
 
-    document.getElementById("finished-toggle").addEventListener("click", () => {
-        const box = document.getElementById("finished-container");
-        box.style.display = box.style.display === "none" ? "block" : "none";
-    });
+document.getElementById("finished-toggle").addEventListener("click", () => {
+    const box = document.getElementById("finished-container");
+    const current = getComputedStyle(box).display;
+box.style.display = current === "none" ? "block" : "none";
+});
