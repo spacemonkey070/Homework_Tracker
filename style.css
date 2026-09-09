@@ -10,7 +10,9 @@ h1{
 
 #class-input,
 #name-input,
-#date-input{
+#date-input,
+#info-input,
+#info-type {
     width: 500px;
 }
 
@@ -125,13 +127,6 @@ button.finish-btn {
 .hw-info {
     margin-top: 8px;
 }
-
-#info-type {
-    width: 120px;
-    padding: 4px 6px;
-    font-size: 13px;
-}
-
 
 .delete-btn {
     position: absolute;
