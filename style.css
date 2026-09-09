@@ -10,8 +10,7 @@ h1{
 
 #class-input,
 #name-input,
-#date-input,
-#info-input {
+#date-input{
     width: 500px;
 }
 
