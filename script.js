@@ -140,10 +140,12 @@ document.getElementById("unfinished-toggle").addEventListener("click", () => {
     const current = getComputedStyle(box).display;
 
     const arrow = document.querySelector("#unfinished-toggle .arrow");
-    const isOpen = current === "none";
 
-    arrow.classList.toggle("closed", isOpen);
-    box.style.display = current === isOpen ? "block" : "none";
+    const isOpen = current !== "none";  
+
+    arrow.classList.toggle("closed", !isOpen);
+
+    box.style.display = isOpen ? "none" : "block";
 });
 
 document.getElementById("finished-toggle").addEventListener("click", () => {
@@ -151,8 +153,11 @@ document.getElementById("finished-toggle").addEventListener("click", () => {
     const current = getComputedStyle(box).display;
 
     const arrow = document.querySelector("#finished-toggle .arrow");
-    const isOpen = current === "none";
 
-    arrow.classList.toggle("closed", isOpen);
-    box.style.display = current === isOpen ? "block" : "none";
+    const isOpen = current !== "none";   
+
+    arrow.classList.toggle("closed", !isOpen);
+
+    box.style.display = isOpen ? "none" : "block";
 });
+
