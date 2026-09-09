@@ -14,30 +14,35 @@ function formatDate(iso) {
     return `${month}/${day}/${year}`;
 }
 
-const infoType = document.getElementById("info-type").value;
-const infoInput = document.getElementById("info-input").value.trim();
+document.getElementById("hw-form").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-let infoFinal = infoInput;
+    const infoType = document.getElementById("info-type").value;
+    const infoInput = document.getElementById("info-input").value.trim();
 
-if (infoType === "link") {
-    if (!infoInput.startsWith("http://") && !infoInput.startsWith("https://")) {
-        infoFinal = "https://" + infoInput;
+    let infoFinal = infoInput;
+
+    if (infoType === "link") {
+        if (!infoInput.startsWith("http://") && !infoInput.startsWith("https://")) {
+            infoFinal = "https://" + infoInput;
+        }
     }
-}
 
-const hw = {
-    class: document.getElementById("class-input").value,
-    name: document.getElementById("name-input").value,
-    due: document.getElementById("date-input").value,
-    infoType: infoType,
-    info: infoFinal,
-    finished: false
-};
+    const hw = {
+        class: document.getElementById("class-input").value,
+        name: document.getElementById("name-input").value,
+        due: document.getElementById("date-input").value,
+        infoType: infoType,
+        info: infoFinal,
+        finished: false
+    };
 
     homework.push(hw);
     saveHW();
     renderHW();
     this.reset();
+});
+
 
 
 function renderHW() {
