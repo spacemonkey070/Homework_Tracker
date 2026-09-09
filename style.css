@@ -190,3 +190,9 @@ button.finish-btn {
 .dropdown div {
     margin-top: 10px;
 }
+
+#unfinished-container,
+#finished-container {
+    display: block;
+}
+
