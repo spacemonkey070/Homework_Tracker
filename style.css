@@ -127,14 +127,6 @@ button.finish-btn {
     margin-top: 8px;
 }
 
-#info-type {
-    width: 20%;
-    padding: 8px;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-
 .delete-btn {
     position: absolute;
     bottom: 8px;
