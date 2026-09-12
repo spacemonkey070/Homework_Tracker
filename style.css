@@ -71,9 +71,8 @@ h1{
 
 .hw-item {
     position: relative;
-    min-height: 120px;
+    max-height: 120px;
     padding-bottom: 45px;
-    overflow: visible;
 }
 
 .hw-due {
