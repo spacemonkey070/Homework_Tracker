@@ -67,8 +67,10 @@ function renderHW() {
                 <strong>${hw.class}: ${hw.name}</strong>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
-            <p><strong>Due:</strong> ${hw.due}</p>
-            <p>${hw.info}</p>
+            <div class="hw-info">
+                <p>${hw.info}</p>
+            </div>
+            <span class="hw-due">Due: ${formatDate(hw.due)}</span>
         `;
 
         item.querySelector(".finish-btn").addEventListener("click", () =>{
