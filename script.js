@@ -73,6 +73,7 @@ function renderHW() {
 
         item.querySelector(".finish-btn").addEventListener("click", () =>{
             hw.finished = !hw.finished;
+            saveHW();
             renderHW();
         });
 
