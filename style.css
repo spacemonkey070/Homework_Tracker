@@ -70,15 +70,10 @@ h1{
 }
 
 .hw-item {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background: transparent;
-    border-left: 10px solid transparent;
     position: relative;
-    padding-bottom: 40px;
+    min-height: 120px;
+    padding-bottom: 45px;
+    overflow: visible;
 }
 
 .hw-due {
@@ -141,6 +136,8 @@ button.finish-btn {
     border: none;
     font-size: 20px;
     cursor: pointer;
+    color: #444;
+    z-index: 5;
 }
 
 .delete-btn:hover {
