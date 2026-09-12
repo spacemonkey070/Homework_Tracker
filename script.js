@@ -71,10 +71,18 @@ function renderHW() {
                 <p>${hw.info}</p>
             </div>
             <span class="hw-due">Due: ${formatDate(hw.due)}</span>
+
+            <button class="delete-btn">🗑️</button>
         `;
 
         item.querySelector(".finish-btn").addEventListener("click", () =>{
             hw.finished = !hw.finished;
+            saveHW();
+            renderHW();
+        });
+
+        item.querySelector(".delete-btn").addEventListener("click", () => {
+            homework.splice(index, 1);
             saveHW();
             renderHW();
         });
