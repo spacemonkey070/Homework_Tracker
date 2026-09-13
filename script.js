@@ -65,10 +65,11 @@ function renderHW() {
         let infoDisplay = "";
         
         if (hw.infoType === "link") {
-            if (!hw.info.startsWith("http://") && !hw.info.startsWith("https://")) {
-                hw.info = "https://" + hw.info;
+            let link = hw.info;
+            if (!link.startsWith("http://") && !link.startsWith("https://")) {
+                link = "https://" + link;
             }
-            infoDisplay = `<a href="${hw.info}" target="_blank">${hw.info}</a>`;
+            infoDisplay = `<a href="${link}" target="_blank">${link}</a>`;
 
         } else {
             infoDisplay = hw.info;
