@@ -73,8 +73,6 @@ h1{
     position: relative;
     min-height: 100px;
     padding-bottom: 45px;
-    border: 10px solid #333;
-    border-radius: 10px;
     width: 85%;
     margin: 10px auto;
     padding: 15px 20px 45px 20px;
@@ -88,15 +86,17 @@ h1{
     font-size: 14px;
     color: #555;
     font-weight: bold;
+    border-radius: 10px;
+    background: #f0f0f0;
 }
 
 .hw-red {
-    border-left-color: #ff4d4d;
+    border-left: 12px solid #ff4d4d;
     background: #ffe5e5;
 }
 
 .hw-green {
-    border-left-color: #4caf50;
+    border-left: 12px solid #4caf50;
     background: #e5ffe5;
 }
 
@@ -108,7 +108,7 @@ h1{
 
 button.finish-btn {
     align-self: center;
-    padding: 6x 12px;
+    padding: 6px 12px;
     background: #4caf50;
     color: white;
     border: none;
