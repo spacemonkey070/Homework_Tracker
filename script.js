@@ -21,8 +21,7 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
         class: document.getElementById("class-input").value,
         name: document.getElementById("name-input").value,
         due: document.getElementById("date-input").value,
-        infoType: infoType,
-        info: infoFinal,
+        info: document.getElementById("info-input").value.trim(),
         finished: false
     };
 
