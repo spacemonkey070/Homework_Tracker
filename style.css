@@ -94,11 +94,13 @@ h1{
 .hw-red {
     border-left: 12px solid #ff4d4d;
     background-color: #ffe5e5;
+    border-radius: 12px;
 }
 
 .hw-green {
     border-left: 12px solid #4caf50;
     background-color: #e5ffe5;
+    border-radius: 12px;
 }
 
 .hw-top {
