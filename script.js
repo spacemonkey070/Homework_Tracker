@@ -80,7 +80,7 @@ function renderHW() {
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
             <div class="hw-info">
-                <p>${hw.info}</p>
+                <p>${infoDisplay}</p>
             </div>
             <span class="hw-due">Due: ${formatDate(hw.due)}</span>
 
