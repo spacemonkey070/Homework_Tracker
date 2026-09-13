@@ -76,6 +76,8 @@ h1{
     width: 85%;
     margin: 10px auto;
     padding: 15px 20px 45px 20px;
+    border-radius: 12px;
+    overflow: hidden;
     
 }
 
@@ -87,7 +89,6 @@ h1{
     color: #555;
     font-weight: bold;
     border-radius: 10px;
-    background: #f0f0f0;
 }
 
 .hw-red {
