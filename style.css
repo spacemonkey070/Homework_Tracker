@@ -28,7 +28,8 @@ h1{
 #date-input,
 #info-input {
     width: 100%;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     border-radius: 8px;
     border: none;
     background: #3a3a3a;
