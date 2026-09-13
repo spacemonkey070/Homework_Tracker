@@ -62,26 +62,13 @@ function renderHW() {
         item.classList.add("hw-item");
         item.classList.add(hw.finished ? "hw-green" : "hw-red");
 
-        let infoDisplay = "";
-        
-        if (hw.infoType === "link") {
-            let link = hw.info;
-            if (!link.startsWith("http://") && !link.startsWith("https://")) {
-                link = "https://" + link;
-            }
-            infoDisplay = `<a href="${link}" target="_blank">${link}</a>`;
-
-        } else {
-            infoDisplay = hw.info;
-        }   
-
         item.innerHTML = `
             <div class="hw-top">
                 <strong>${hw.class}: ${hw.name}</strong>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
             <div class="hw-info">
-                <p>${infoDisplay}</p>
+                <p>${hw.info}</p>
             </div>
             <span class="hw-due">Due: ${formatDate(hw.due)}</span>
 
