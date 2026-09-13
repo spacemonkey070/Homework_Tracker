@@ -1,32 +1,21 @@
-// load saved hw from localStorage
+// load saved hw
 const saved = localStorage.getItem("homework");
 let homework = saved ? JSON.parse(saved) : [];
 renderHW();
 
-// save hw when changes
+// save hw to local storage
 function saveHW() {
     localStorage.setItem("homework", JSON.stringify(homework));
 }
 
-// correcting the date for box
+// format date for display
 function formatDate(iso) {
     const [year, month, day] = iso.split("-");
     return `${month}/${day}/${year}`;
 }
-
+// add HW
 document.getElementById("hw-form").addEventListener("submit", function(e) {
     e.preventDefault();
-
-    const infoType = document.getElementById("info-type").value;
-    const infoInput = document.getElementById("info-input").value.trim();
-
-    let infoFinal = infoInput;
-
-    if (infoType === "link") {
-        if (!infoInput.startsWith("http://") && !infoInput.startsWith("https://")) {
-            infoFinal = "https://" + infoInput;
-        }
-    }
 
     const hw = {
         class: document.getElementById("class-input").value,
@@ -44,7 +33,7 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 });
 
 
-
+//render HW items
 function renderHW() {
     homework.sort((a, b) => {
         if (a.finished !== b.finished) return a.finished ? 1 : -1;
@@ -57,36 +46,53 @@ function renderHW() {
     unfinished.innerHTML = "";
     finished.innerHTML = "";
 
+    //class collor mapping
+    const classes = JSON.parse(localStorage.getItem("classes")) || [];
+    const colorMap = {};
+    classes.forEach(cls => {
+        colorMap[cls.name] = cls.color || "#888";
+    });
+
     homework.forEach((hw, index) => {
         const item = document.createElement("div");
         item.classList.add("hw-item");
         item.classList.add(hw.finished ? "hw-green" : "hw-red");
 
+        const classColor = colorMap[hw.class] || "#888";
+
         item.innerHTML = `
             <div class="hw-top">
-                <strong>${hw.class}: ${hw.name}</strong>
+                <div class="hw-details">
+                    <span class="hw-class" style="background:${classColor}">${hw.class}</span>
+                    <span class="hw-name">${hw.name}</span>
+                </div>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
+
             <div class="hw-info">
-                <p>${hw.info}</p>
+                <p>${hw.info || ""}</p>
             </div>
+
             <span class="hw-due">Due: ${formatDate(hw.due)}</span>
 
             <button class="delete-btn">🗑️</button>
         `;
 
+        // finish toggle
         item.querySelector(".finish-btn").addEventListener("click", () =>{
             hw.finished = !hw.finished;
             saveHW();
             renderHW();
         });
 
+        // delete toggle
         item.querySelector(".delete-btn").addEventListener("click", () => {
             homework.splice(index, 1);
             saveHW();
             renderHW();
         });
 
+        //append tocorrect container
         if (hw.finished) {
             finished.appendChild(item);
         } else {
@@ -97,17 +103,17 @@ function renderHW() {
     updateProgress();
 }
 
-
-
+//update progress bar and circle
 function updateProgress() {
     const total = homework.length;
     const done = homework.filter(hw => hw.finished).length;
     const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+    //progress bar
     document.getElementById("progress-bar").style.width = percent + "%";
-
+    //circle progress
     const circle = document.getElementById("circle-progress");
     circle.style.strokeDasharray = `${percent}, 100`;
-
+    //circle text
     document .getElementById("circle-text").textContent = `${done} / ${total}`;
 }
 
@@ -120,16 +126,7 @@ hamburger.addEventListener("click", () => {
     sidebar.classList.toggle("open");
 });
 
-function showHomework() {
-    document.getElementById("homework-tab").style.display = "block";
-    document.getElementById("classes-tab").style.display = "none";
-}
-
-function showClasses() {
-    document.getElementById("homework-tab").style.display = "none";
-    document.getElementById("classes-tab").style.display = "block";
-}
-
+//load classes into dropdown
 function loadClassesIntoDropdown() {
     const dropdown = document.getElementById("class-input");
     const classes = JSON.parse(localStorage.getItem("classes")) || [];
@@ -146,29 +143,24 @@ function loadClassesIntoDropdown() {
 
 document.addEventListener("DOMContentLoaded", loadClassesIntoDropdown);
 
+// Dropdown toggles
 document.getElementById("unfinished-toggle").addEventListener("click", () => {
     const box = document.getElementById("unfinished-container");
     const current = getComputedStyle(box).display;
-
     const arrow = document.querySelector("#unfinished-toggle .arrow");
-
     const isOpen = current !== "none";  
 
     arrow.classList.toggle("closed", isOpen);
-
     box.style.display = isOpen ? "none" : "block";
 });
 
 document.getElementById("finished-toggle").addEventListener("click", () => {
     const box = document.getElementById("finished-container");
     const current = getComputedStyle(box).display;
-
     const arrow = document.querySelector("#finished-toggle .arrow");
-
     const isOpen = current !== "none";   
 
     arrow.classList.toggle("closed", isOpen);
-
     box.style.display = isOpen ? "none" : "block";
 });
 
