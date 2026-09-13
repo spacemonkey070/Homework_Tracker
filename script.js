@@ -62,6 +62,14 @@ function renderHW() {
         item.classList.add("hw-item");
         item.classList.add(hw.finished ? "hw-green" : "hw-red");
 
+        let infoDisplay = "";
+        
+        if (hw.infoType === "link") {
+            infoDisplay = `<a href="${hw.info}" target="_blank">${hw.info}</a>`;
+        } else {
+            infoDisplay = hw.info;
+        }   
+
         item.innerHTML = `
             <div class="hw-top">
                 <strong>${hw.class}: ${hw.name}</strong>
