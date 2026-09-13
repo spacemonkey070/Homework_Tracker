@@ -65,7 +65,11 @@ function renderHW() {
         let infoDisplay = "";
         
         if (hw.infoType === "link") {
+            if (!hw.info.startsWith("http://") && !hw.info.startsWith("https://")) {
+                hw.info = "https://" + hw.info;
+            }
             infoDisplay = `<a href="${hw.info}" target="_blank">${hw.info}</a>`;
+
         } else {
             infoDisplay = hw.info;
         }   
