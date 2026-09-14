@@ -1,18 +1,31 @@
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background: #f5f5f5;
+    background: #1c1c1c;
 }
 
 h1 {
     text-align: center;
-}
+    margin-top: 30px;
+    font-family: 'inter', sans-serif;
+    font-weight: 700;
+} 
 
 #add-class-btn {
     display: block;
-    margin: 10px auto;
-    padding: 10px 20px;
+    margin: 20px auto;
+    padding: 12px 25px;
     font-size: 16px;
+    background: #7ac142;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#add-class-btn:hover {
+    background: #6bb03a;
 }
 
 #add-class-form {
@@ -20,12 +33,13 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: white;
+    background: #2a2a2a;
     padding: 20px;
     width: 320px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
     z-index: 1000;
+    color: #fff;
 }
 
 #form-overlay {
@@ -34,7 +48,7 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.6);
     z-index: 999;
 }
 
@@ -42,25 +56,25 @@ h1 {
 #add-class-form label {
     display: block;
     margin-top: 10px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 #add-class-form input {
     width: 95%;
     padding: 6px;
     margin-top: 4px;
+    background: #1f1f1f;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 6px;
 }
 
 #day-select label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-weight: normal;
     font-size: 14px;
+    color: #ccc;
 }
 #day-select {
     display: flex;
-    flex-wrap: nowrap;
     gap: 12px;
     margin-top: 6px;
 }
@@ -78,21 +92,27 @@ h1 {
 }
 
 .class-box {
-    width: 220px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    width: 240px;
+    background: #2a2a2a;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    overflow: hidden;
 }
 
 .class-box-top {
     padding: 10px;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px 8px 0 0;
+    background: #7ac142;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .class-box-content {
-    padding: 10px;
+    padding: 12px;
+    color: #ccc;
 }
 
 #week-layout {
@@ -103,20 +123,22 @@ h1 {
 }
 
 .week-day {
-    background: white;
+    background: #2a2a2a;
     padding: 10px;
     min-height: 500px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.4);
+    color: #fff;
 }
 
 .week-class-item {
     margin-top: 8px;
     padding: 6px;
     border-radius: 6px;
-    color: white;
+    background: #7ac142;
+    color: #fff;
     font-size: 14px;
-    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
 }
 
 .delete-class-btn {
@@ -125,13 +147,13 @@ h1 {
     border: none;
     font-size: 18px;
     cursor: pointer;
-    color: white;
+    color: #fff;
     margin-right: 6px;
-    transition: color 0.2s ease;
+    transition: 0.2s;
 }
 
 .delete-class-btn:hover {
-    color: #ffdddd;
+    color: #ff4d4d;
 }
 
 #delete-overlay {
@@ -140,10 +162,9 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
+    background: rgba(0,0,0,0.7);
     z-index: 200;
+    display: none;
 }
 
 #delete-overlay.show {
@@ -153,31 +174,32 @@ h1 {
 }
 
 #delete-popup {
-    background: white;
+    background: #2a2a2a;
     padding: 20px;
     border-radius: 10px;
     width: 260px;
     text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    position: relative;
-    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    color: #fff;
 }
 
 #confirm-delete-btn {
-    background: red;
-    color: white;
+    background: #ff4d4d;
+    color: #fff;
     border: none;
     padding: 10px;
     margin-right: 10px;
     cursor: pointer;
+    border-radius: 6px;
 }
 
 #cancel-delete-btn {
     background: gray;
-    color: white;
+    color: #fff;
     border: none;
     padding: 10px;
     cursor: pointer;
+    border-radius: 6px;
 }
 
 #hamburger {
@@ -187,6 +209,7 @@ h1 {
     top: 10px;
     left: 10px;
     z-index: 1000;
+    color: #fff;
 }
 
 #sidebar {
@@ -195,8 +218,8 @@ h1 {
     left: -350px; 
     width: 250px;
     height: 100%;
-    background: #f2f2f2;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+    background: #2a2a2a;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
     padding: 20px;
     transition: left 0.3s ease;
     z-index: 999;
@@ -210,5 +233,10 @@ h1 {
     padding: 10px;
     margin: 10px 0;
     font-size: 16px;
+    background: #7ac142;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 

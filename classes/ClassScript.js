@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     classesViewBtn.addEventListener("click", () => {
         classesView.classList.remove("hidden");
         scheduleView.classList.add("hidden");
-    });
+    }); 
 
     scheduleViewBtn.addEventListener("click", () => {
         classesView.classList.add("hidden");
