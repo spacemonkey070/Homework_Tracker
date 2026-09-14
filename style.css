@@ -125,6 +125,7 @@ button.finish-btn {
     align-items: center;
     gap: 20px;
     justify-content: center;
+    padding-bottom: 10px;
 }
 
 .hw-class {
