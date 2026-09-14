@@ -121,7 +121,7 @@ button.finish-btn {
 
 .hw-details {
     display: flex;
-    flex-direction: row-reverse; 
+    flex-direction: row; 
     align-items: center;
     gap: 20px;
     justify-content: center;
