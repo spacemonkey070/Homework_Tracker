@@ -103,6 +103,7 @@ h1{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 10px;
 }
 
 button.finish-btn {
@@ -120,15 +121,15 @@ button.finish-btn {
 
 .hw-details {
     display: flex;
-    flex-direction: row; 
+    flex-direction: row-reverse; 
     align-items: flex-start;
     gap: 15px;
+    justify-content: center;
 }
 
 .hw-class {
     display: inline-block;
     padding: 4px 8px;
-    padding-bottom: 10px;
     border-radius: 6px;
     font-weight: bold;
     color: #fff;
