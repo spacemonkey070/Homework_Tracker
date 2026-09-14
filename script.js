@@ -62,8 +62,9 @@ function renderHW() {
         item.innerHTML = `
             <div class="hw-top">
                 <div class="hw-details">
-                    <span class="hw-class" style="background:${classColor}">${hw.class}</span>
                     <span class="hw-name">${hw.name}</span>
+                    <span class="hw-class" style="background:${classColor}">${hw.class}</span>
+
                 </div>
                 <button class="finish-btn">${hw.finished ? "Undo" : "Finish"}</button>
             </div>
