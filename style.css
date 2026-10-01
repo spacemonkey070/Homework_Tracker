@@ -171,7 +171,7 @@ button.finish-btn {
 
 /* Progress Circle */
 #progress-circle {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
     width: 180px;
