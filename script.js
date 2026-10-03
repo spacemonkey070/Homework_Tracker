@@ -16,12 +16,21 @@ function formatDate(iso) {
 // add HW
 document.getElementById("hw-form").addEventListener("submit", function(e) {
     e.preventDefault();
+// -- combine date and time --
+    const date = document.getElementById("due-input").value;
+    const time = document.getElementById("time-input").value;
+    const fullDue = `${date}T${time}`;
+
+// -- checking the checkboxes --
+    const reminderChecks = document.querySelectorAll(".reminder-checkbox:checked");
+    const reminders = Array.from(reminderChecks).map(cb => parseInt(cb.value));
 
     const hw = {
         class: document.getElementById("class-input").value,
         name: document.getElementById("name-input").value,
-        due: document.getElementById("date-input").value,
+        due: fullDue,
         info: document.getElementById("info-input").value.trim(),
+        reminders: reminders,
         finished: false
     };
 
