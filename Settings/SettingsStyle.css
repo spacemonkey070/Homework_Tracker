@@ -1,0 +1,23 @@
+body {
+    font-family: Arial;
+    padding: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+#reminder-boxes label {
+    display: block;
+    margin: 5px 0;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}

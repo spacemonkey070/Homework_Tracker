@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Settings</h1>
+    <label>Phone Number</label>
+    <input id="phoneInput" type="tel" placeholder="123-456-7890">
+
+    <label>Carrier</label>
+    <select id="carrierInput">
+        <option value="vtext">Verizon</option>
+        <option value="txt.att.net">AT&T</option>
+        <option value="tmomail.net">T-Mobile</option>
+        <option value="messaging.sprintpcs.com">Sprint</option>
+        <option value="sms.myboostmobile.com">Boost</option>
+        <option value="sms.cricketwireless.net">Cricket</option>
+    </select>
+
+
+
+    <h3>Reminder Times</h3>
+    <div id="reminder-boxes">
+        <label><input type="checkbox" class="reminder-check" value="60"> 1 hour </label>
+        <label><input type="checkbox" class="reminder-check" value="120"> 2 hours </label>
+        <label><input type="checkbox" class="reminder-check" value="180"> 3 hours </label>
+        <label><input type="checkbox" class="reminder-check" value="1440"> 1 day </label>
+        <label><input type="checkbox" class="reminder-check" value="4320"> 3 days </label>
+    </div>
+    <button onclick="saveSettings()">Save Settings</button>
+    <button onclick="testSMS()">Test SMS</button>
+    <script src="SettingsScript.js"></script>
+</body>
+</html>
