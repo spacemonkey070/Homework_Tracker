@@ -18,8 +18,6 @@
         <option value="sms.cricketwireless.net">Cricket</option>
     </select>
 
-
-
     <h3>Reminder Times</h3>
     <div id="reminder-boxes">
         <label><input type="checkbox" class="reminder-check" value="60"> 1 hour </label>
@@ -31,5 +29,20 @@
     <button onclick="saveSettings()">Save Settings</button>
     <button onclick="testSMS()">Test SMS</button>
     <script src="SettingsScript.js"></script>
+
+    <h2>Canvas Integration</h2>
+
+    <div id="canvas-settings">
+        <label>Canvas API Token:</label><br>
+        <input type="password" id="canvas-token" placeholder="Paste your token here">
+        <br><br>
+        <button id="load-courses-btn">Load Canvas Courses</button>
+        <div id="canvas-course-list" style="margin-top:20px;">
+        </div>
+        <button id="sync-assignments-btn" style="margin-top:20px;">
+            Sync Selected Courses
+        </button>
+    </div>
+
 </body>
 </html>
