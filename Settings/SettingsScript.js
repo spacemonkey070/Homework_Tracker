@@ -156,16 +156,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function fetchCanvasAssignments(courseId, token) {
-        const url = `https://lawrencetech.instructure.com/api/v1/courses/${courseId}/assignments`;
-
-        const res = await fetch(url, {
-            headers: { "Authorization": `Bearer ${token}` }
+        const res = await fetch("http://localhost:3001/canvas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                endpoint: `courses/${courseId}/assignments`,
+                token
+            })
         });
-
-        if (!res.ok) throw new Error("Failed to load assignments");
 
         return await res.json();
     }
+
     function saveCanvasCourses(courses) {
         const stored = JSON.parse(localStorage.getItem("classes")) || [];
 
@@ -191,9 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const hwList = JSON.parse(localStorage.getItem("homework")) || [];
 
         assignments.forEach(a => {
+            let hwName = a.name;
+            if (hwName.includes(":")) {
+                hwName = hwName.split(":").slice(1).join(":").trim();
+            }
             const hwItem = {
                 class: course ? course.name : "Unknown",
-                name: a.name,
+                name: hwName,
                 due: a.due_at ? a.due_at.split("T")[0] : "No Due Date",
                 info: a.html_url,
                 finished: false
@@ -201,14 +207,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const exists = hwList.some(h => h.info === hwItem.info);
             if (!exists) hwList.push(hwItem);
-        });
-
-        let hwName = a.name;
-        if (hwName.includes(":")) {
-            hwName = hwName.split(":").slice(1).join(":").trim();
-        }
-
+    });
+        
         localStorage.setItem("homework", JSON.stringify(hwList));
     }
 });
-
