@@ -1,6 +1,7 @@
 // load saved hw
 const saved = localStorage.getItem("homework");
 let homework = saved ? JSON.parse(saved) : [];
+loadCanvasHomework();
 renderHW();
 
 // save hw to local storage
@@ -38,6 +39,21 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
     this.reset();
 });
 
+async function loadCanvasHomework() {
+    try {
+        const response = await fetch(
+            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
+        );
+
+        const canvasHomework =
+            await response.json();
+
+        console.log(canvasHomework);
+
+    } catch (err) {
+        console.error(err);
+    }
+}
 
 //render HW items
 function renderHW() {
