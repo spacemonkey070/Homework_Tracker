@@ -41,7 +41,7 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 async function loadCanvasHomework() {
     try {
         const response = await fetch(
-            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
+            'https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework'
         );
 
         const canvasHomework = await response.json();
