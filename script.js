@@ -175,7 +175,7 @@ function loadClassesIntoDropdown() {
 
     classes.forEach(cls => {
         const option = document.createElement("option");
-        option.value = cls.name;   // or cls.className depending on your structure
+        option.value = cls.name;  
         option.textContent = cls.name;
         dropdown.appendChild(option);
     });
