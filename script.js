@@ -45,6 +45,7 @@ async function loadCanvasHomework() {
         );
 
         const canvasHomework = await response.json();
+        console.log("Canvas Homework:", canvasHomework);
         canvasHomework.forEach(assignment => {
 
             const alreadyExists = homework.some(
@@ -63,6 +64,8 @@ async function loadCanvasHomework() {
                 });
             }
         });
+
+        console.log("Homework Array:", homework);
 
         saveHW();
         renderHW();
