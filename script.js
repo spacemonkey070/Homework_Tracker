@@ -2,7 +2,6 @@
 const saved = localStorage.getItem("homework");
 let homework = saved ? JSON.parse(saved) : [];
 loadCanvasHomework();
-renderHW();
 
 // save hw to local storage
 function saveHW() {
@@ -45,13 +44,31 @@ async function loadCanvasHomework() {
             "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
         );
 
-        const canvasHomework =
-            await response.json();
+        const canvasHomework = await response.json();
+        canvasHomework.forEach(assignment => {
 
-        console.log(canvasHomework);
+            const alreadyExists = homework.some(
+                hw => hw.canvasId === assignment.id
+            );
+
+            if (!alreadyExists) {
+                homework.push({
+                    canvasId: assignment.id,
+                    class: assignment.courseName,
+                    name: assignment.title,
+                    due: assignment.dueDate.split("T")[0],
+                    info: `${assignment.points} pts`,
+                    finished: false,
+                    canvas: true
+                });
+            }
+        });
+
+        saveHW();
+        renderHW();
 
     } catch (err) {
-        console.error(err);
+        console.error("Canvas Load Error:", err);
     }
 }
 
