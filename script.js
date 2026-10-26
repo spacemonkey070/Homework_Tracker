@@ -39,10 +39,14 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 
 async function loadCanvasHomework() {
     try {
+        console.log("Starting fetch...");
+
         const response = await fetch(
             "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
         );
 
+        console.log("Response:", response);
+        
         const canvasHomework = await response.json();
 
         console.log("Canvas Homework:", canvasHomework);
