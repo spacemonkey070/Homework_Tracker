@@ -45,12 +45,12 @@ async function loadCanvasHomework() {
         const response = await fetch(
             "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework",
             {
-                method: "GET"
+                mode: "cors"
             }
         );
-
         console.log("Status:", response.status);
         console.log("OK:", response.ok);
+        console.log(response);
 
         const canvasHomework = await response.json();
 
