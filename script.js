@@ -39,58 +39,29 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 
 async function loadCanvasHomework() {
     try {
+
         console.log("Starting fetch...");
 
         const response = await fetch(
-            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
+            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework",
+            {
+                method: "GET"
+            }
         );
 
-        console.log("Response:", response);
-        
+        console.log("Status:", response.status);
+        console.log("OK:", response.ok);
+
         const canvasHomework = await response.json();
 
         console.log("Canvas Homework:", canvasHomework);
 
-        canvasHomework.forEach(assignment => {
-
-            console.log("Assignment:", assignment);
-
-            const alreadyExists = homework.some(
-                hw => hw.canvasId === assignment.id
-            );
-
-            if (!alreadyExists) {
-
-                homework.push({
-                    canvasId: assignment.id,
-
-                    // CHANGE THESE IF YOUR JSON USES DIFFERENT NAMES
-                    class: assignment.courseName || "Canvas",
-                    name: assignment.title || assignment.name,
-
-                    due: assignment.dueDate
-                        ? assignment.dueDate.split("T")[0]
-                        : new Date().toISOString().split("T")[0],
-
-                    info: assignment.points
-                        ? `${assignment.points} pts`
-                        : "",
-
-                    finished: false,
-                    canvas: true
-                });
-            }
-        });
-
-        console.log("Homework Array:", homework);
-
-        saveHW();
-        renderHW();
-
     } catch (err) {
         console.error("Canvas Load Error:", err);
+        console.error("Message:", err.message);
     }
 }
+
 
 
 //render HW items
