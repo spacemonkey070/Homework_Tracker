@@ -1,7 +1,6 @@
 // load saved hw
 const saved = localStorage.getItem("homework");
 let homework = saved ? JSON.parse(saved) : [];
-loadCanvasHomework();
 
 // save hw to local storage
 function saveHW() {
@@ -41,24 +40,38 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
 async function loadCanvasHomework() {
     try {
         const response = await fetch(
-            'https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework'
+            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
         );
 
         const canvasHomework = await response.json();
+
         console.log("Canvas Homework:", canvasHomework);
+
         canvasHomework.forEach(assignment => {
+
+            console.log("Assignment:", assignment);
 
             const alreadyExists = homework.some(
                 hw => hw.canvasId === assignment.id
             );
 
             if (!alreadyExists) {
+
                 homework.push({
                     canvasId: assignment.id,
-                    class: assignment.courseName,
-                    name: assignment.title,
-                    due: assignment.dueDate.split("T")[0],
-                    info: `${assignment.points} pts`,
+
+                    // CHANGE THESE IF YOUR JSON USES DIFFERENT NAMES
+                    class: assignment.courseName || "Canvas",
+                    name: assignment.title || assignment.name,
+
+                    due: assignment.dueDate
+                        ? assignment.dueDate.split("T")[0]
+                        : new Date().toISOString().split("T")[0],
+
+                    info: assignment.points
+                        ? `${assignment.points} pts`
+                        : "",
+
                     finished: false,
                     canvas: true
                 });
@@ -75,8 +88,12 @@ async function loadCanvasHomework() {
     }
 }
 
+
 //render HW items
 function renderHW() {
+
+    console.log("Rendering Homework:", homework);
+
     homework.sort((a, b) => {
         if (a.finished !== b.finished) return a.finished ? 1 : -1;
         return new Date(a.due) - new Date(b.due);
@@ -184,8 +201,11 @@ function loadClassesIntoDropdown() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", loadClassesIntoDropdown);
-
+document.addEventListener("DOMContentLoaded", () => {
+    loadClassesIntoDropdown();
+    loadCanvasHomework();
+    renderHW();
+});
 // Dropdown toggles
 document.getElementById("unfinished-toggle").addEventListener("click", () => {
     const box = document.getElementById("unfinished-container");
