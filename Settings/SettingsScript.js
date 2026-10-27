@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     });
 });
-
+    console.log("fetchCanvasCourses loaded");   
    async function fetchCanvasCourses(token) {
     const res = await fetch(
         "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/courses",
