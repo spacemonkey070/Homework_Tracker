@@ -82,7 +82,7 @@ function testSMS() {
 }
 
 // --- Canvas Token ---
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const tokenInput = document.getElementById("canvas-token");
     if (!tokenInput) return; // Only run on Settings page
 
@@ -125,19 +125,25 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "../index.html";
 
     });
+})
 
-    async function fetchCanvasCourses(token) {
-        const url = "https://lawrencetech.instructure.com/api/v1/courses";
+   async function fetchCanvasCourses(token) {
+    const res = await fetch(
+        "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/courses",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ token })
+        }
+    );
 
-        const res = await fetch(url, {
-            headers: { "Authorization": `Bearer ${token}` }
-        });
-
-        return (await res.json()).filter(c =>
-            c.enrollment_type === "student" &&
-            c.workflow_state === "available"
-        );
-    }
+    return (await res.json()).filter(c =>
+        c.enrollment_type === "student" &&
+        c.workflow_state === "available"
+    );
+}
 
     function displayCanvasCourses(courses) {
         const list = document.getElementById("canvas-course-list");
@@ -211,4 +217,3 @@ document.addEventListener("DOMContentLoaded", () => {
         
         localStorage.setItem("homework", JSON.stringify(hwList));
     }
-});
