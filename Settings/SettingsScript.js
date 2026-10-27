@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "../index.html";
 
     });
-})
+});
 
    async function fetchCanvasCourses(token) {
     const res = await fetch(
