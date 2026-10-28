@@ -1,4 +1,4 @@
-console.log("Settings page loaded");
+/*console.log("Settings page loaded");
 
 async function syncAssignments() {
 
@@ -50,3 +50,47 @@ document.addEventListener(
 
     }
 );
+*/
+console.log("SettingsScript loaded");
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("DOM loaded");
+
+    const btn = document.getElementById("sync-assignments-btn");
+
+    console.log("Button found:", btn);
+
+    btn.addEventListener("click", async () => {
+
+        console.log("BUTTON CLICKED");
+
+        try {
+
+            const response = await fetch(
+                "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
+            );
+
+            console.log("Response:", response);
+
+            const data = await response.json();
+
+            console.log("Assignments:", data);
+
+            localStorage.setItem(
+                "homework",
+                JSON.stringify(data)
+            );
+
+            alert("Assignments synced!");
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert(err.message);
+        }
+
+    });
+
+});
