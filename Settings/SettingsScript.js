@@ -64,34 +64,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btn.addEventListener("click", async () => {
 
-        console.log("BUTTON CLICKED");
+    console.log("BUTTON CLICKED");
 
-        try {
+    try {
 
-            const response = await fetch(
-                "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
-            );
+        const url =
+            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework";
 
-            console.log("Response:", response);
+        console.log("Fetching:", url);
 
-            const data = await response.json();
+        const response = await fetch(url);
 
-            console.log("Assignments:", data);
+        console.log("Response status:", response.status);
 
-            localStorage.setItem(
-                "homework",
-                JSON.stringify(data)
-            );
+        const text = await response.text();
 
-            alert("Assignments synced!");
+        console.log("Raw response:", text);
 
-        } catch (err) {
+    } catch (err) {
 
-            console.error(err);
+        console.error("FULL ERROR:", err);
 
-            alert(err.message);
-        }
+    }
 
-    });
-
+});
 });
