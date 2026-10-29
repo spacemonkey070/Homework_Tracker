@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "exit 0"
+    "test": "echo \"No tests configured\"",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
