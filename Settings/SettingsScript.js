@@ -83,9 +83,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (err) {
 
-        console.error("FULL ERROR:", err);
+    console.error("FULL ERROR:", err);
 
-    }
+    console.error(err.stack);
+
+    alert(err.message);
+}
 
 });
 });
