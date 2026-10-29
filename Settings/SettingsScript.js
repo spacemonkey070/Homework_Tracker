@@ -85,9 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.error("FULL ERROR:", err);
 
-    console.error(err.stack);
+    console.error(err.message);
 
-    alert(err.message);
 }
 
 });
