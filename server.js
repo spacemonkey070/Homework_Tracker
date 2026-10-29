@@ -16,7 +16,7 @@ app.get("/cors-test", (req, res) => {
 });
 
 app.get("/version", (req, res) => {
-  res.send("VERSION TEST 123");
+    res.send("version-test");
 });
 
 
