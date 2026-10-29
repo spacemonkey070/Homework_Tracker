@@ -51,6 +51,7 @@ document.addEventListener(
     }
 );
 */
+alert("SCRIPT LOADED");
 console.log("SettingsScript loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
