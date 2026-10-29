@@ -16,8 +16,9 @@ app.get("/cors-test", (req, res) => {
 });
 
 app.get("/version", (req, res) => {
-  res.send("backend version 2");
+  res.send("VERSION TEST 123");
 });
+
 
 app.get("/", (req, res) => {
   res.send("Homework Tracker API Online");
