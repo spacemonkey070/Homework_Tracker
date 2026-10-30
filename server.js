@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const canvasService = require("../Homework_Tracker/services/canvasService.js");
-
+const canvasService = require("./services/canvasService.js");
 const app = express();
 
 app.use(express.json());
