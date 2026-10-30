@@ -9,11 +9,9 @@ app.use(cors());
 
 require("dotenv").config();
 
-app.get("/cors-test", (req, res) => {
-    res.json({
-        cors: "working"
-    });
-});
+app.use(cors({
+  origin: "https://spacemonkey070.github.io"
+}));
 
 app.get("/version", (req, res) => {
     res.send("version-test");
