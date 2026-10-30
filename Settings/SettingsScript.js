@@ -63,31 +63,21 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Button found:", btn);
 
     btn.addEventListener("click", async () => {
-
     console.log("BUTTON CLICKED");
 
     try {
+        const response = await fetch(
+          "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
+        );
 
-        const url =
-            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework";
-
-        console.log("Fetching:", url);
-
-        const response = await fetch(url);
-
-        console.log("Response status:", response.status);
+        console.log("status:", response.status);
+        console.log("ok:", response.ok);
 
         const text = await response.text();
-
-        console.log("Raw response:", text);
+        console.log("response body:", text);
 
     } catch (err) {
-
-    console.error("FULL ERROR:", err);
-
-    console.error(err.message);
-
-}
-
+        console.error("FULL ERROR:", err);
+    }
 });
 });
