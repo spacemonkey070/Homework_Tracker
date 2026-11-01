@@ -2,6 +2,21 @@
 const saved = localStorage.getItem("homework");
 let homework = saved ? JSON.parse(saved) : [];
 
+const canvasAssignments =
+    JSON.parse(localStorage.getItem("canvasAssignments")) || [];
+
+canvasAssignments.forEach(a => {
+    if (!homework.some(hw => hw.name === a.name)) {
+        homework.push({
+            class: a.courseName,
+            name: a.name,
+            due: a.dueDate,
+            info: "",
+            finished: false
+        });
+    }
+});
+
 // save hw to local storage
 function saveHW() {
     localStorage.setItem("homework", JSON.stringify(homework));
@@ -24,20 +39,13 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
         finished: false
     };
 
-    const settings = JSON.parse(localStorage.getItem("settings")) || {};
-
-    hw.phone = settings.phone || "";
-    hw.carrier = settings.carrier || "";
-    hw.reminders = settings.reminders || [];
-
-
     homework.push(hw);
     saveHW();
     renderHW();
     this.reset();
 });
 
-async function loadCanvasHomework() {
+/*async function loadCanvasHomework() {
     try {
 
         console.log("Starting fetch...");
@@ -61,7 +69,7 @@ async function loadCanvasHomework() {
         console.error("Message:", err.message);
     }
 }
-
+*/
 
 
 //render HW items
