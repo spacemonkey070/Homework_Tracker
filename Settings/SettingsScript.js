@@ -60,3 +60,18 @@ async function syncAssignments() {
         alert("Unable to sync assignments.");
     }
 }
+
+function renderAssignments(assignments) {
+    if (!Array.isArray(assignments)) {
+        console.error("Expected an array of assignments");
+        return;
+    }
+
+    assignments.forEach((assignment) => {
+        console.log(
+            assignment.name,
+            assignment.courseName,
+            assignment.dueDate
+        );
+    });
+}
