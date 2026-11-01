@@ -52,7 +52,8 @@ async function syncAssignments() {
 
         console.log(`Loaded ${assignments.length} assignments`);
 
-        renderAssignments(assignments);
+        //renderAssignments(assignments);
+        console.log("Assignments received:", assignments);
 
     } catch (error) {
         console.error("Assignment sync failed:", error);
