@@ -1,32 +1,3 @@
-/*
-document.addEventListener("DOMContentLoaded", () => {
-
-    console.log("DOM loaded");
-
-    const btn = document.getElementById("sync-assignments-btn");
-
-    console.log("Button found:", btn);
-
-    btn.addEventListener("click", async () => {
-    console.log("BUTTON CLICKED");
-
-    try {
-        const response = await fetch(
-          "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
-        );
-
-        console.log("status:", response.status);
-        console.log("ok:", response.ok);
-
-        const text = await response.text();
-        console.log("response body:", text);
-
-    } catch (err) {
-        console.error("FULL ERROR:", err);
-    }
-});
-});
-*/
 document.addEventListener("DOMContentLoaded", () => {
     const syncButton = document.getElementById("sync-assignments-btn");
 
@@ -49,7 +20,7 @@ async function syncAssignments() {
         }
 
         const assignments = await response.json();
-
+        localStorage.setItem("CanvasAssignments", JSON.stringify(assignments));
         console.log(`Loaded ${assignments.length} assignments`);
 
         renderAssignments(assignments);
