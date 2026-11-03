@@ -2,21 +2,6 @@
 const saved = localStorage.getItem("homework");
 let homework = saved ? JSON.parse(saved) : [];
 
-const canvasAssignments =
-    JSON.parse(localStorage.getItem("canvasAssignments")) || [];
-
-canvasAssignments.forEach(a => {
-    if (!homework.some(hw => hw.name === a.name)) {
-        homework.push({
-            class: a.courseName,
-            name: a.name,
-            due: a.dueDate,
-            info: "",
-            finished: false
-        });
-    }
-});
-
 // save hw to local storage
 function saveHW() {
     localStorage.setItem("homework", JSON.stringify(homework));
@@ -45,31 +30,33 @@ document.getElementById("hw-form").addEventListener("submit", function(e) {
     this.reset();
 });
 
-/*async function loadCanvasHomework() {
+async function loadCanvasHomework() {
     try {
-
-        console.log("Starting fetch...");
-
         const response = await fetch(
-            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework",
-            {
-                mode: "cors"
-            }
+            "https://all-in-1-b8acdzcyhyhxdpen.centralus-01.azurewebsites.net/unfinishedHomework"
         );
-        console.log("Status:", response.status);
-        console.log("OK:", response.ok);
-        console.log(response);
 
-        const canvasHomework = await response.json();
+        const assignments = await response.json();
 
-        console.log("Canvas Homework:", canvasHomework);
+        assignments.forEach(a => {
+            if (!homework.some(hw => hw.name === a.name)) {
+                homework.push({
+                    class: a.courseName,
+                    name: a.name,
+                    due: a.dueDate,
+                    info: "",
+                    finished: false
+                });
+            }
+        });
+
+        saveHW();
+        renderHW();
 
     } catch (err) {
-        console.error("Canvas Load Error:", err);
-        console.error("Message:", err.message);
+        console.error(err);
     }
 }
-*/
 
 
 //render HW items
@@ -187,7 +174,6 @@ function loadClassesIntoDropdown() {
 document.addEventListener("DOMContentLoaded", () => {
     loadClassesIntoDropdown();
     loadCanvasHomework();
-    renderHW();
 });
 // Dropdown toggles
 document.getElementById("unfinished-toggle").addEventListener("click", () => {
