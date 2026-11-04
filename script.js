@@ -39,10 +39,10 @@ async function loadCanvasHomework() {
         const assignments = await response.json();
 
         assignments.forEach(a => {
-            
+
             if (!isCurrentSchoolYear(a.dueDate)) return;
 
-            if (!homework.some(hw => hw.title === a.title)) {
+            if (!homework.some(hw => hw.name === a.title)) {
                 homework.push({
                     class: a.courseName,
                     name: a.title,
