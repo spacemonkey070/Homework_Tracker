@@ -25,6 +25,7 @@ async function syncAssignments() {
 
         renderAssignments(assignments);
         console.log("Assignments received:", assignments);
+        Alert("Assignments synced");
 
     } catch (error) {
         console.error("Assignment sync failed:", error);
