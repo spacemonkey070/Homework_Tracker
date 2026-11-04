@@ -25,11 +25,11 @@ async function syncAssignments() {
 
         renderAssignments(assignments);
         console.log("Assignments received:", assignments);
-        Alert("Assignments synced");
+        alert("Assignments synced");
 
     } catch (error) {
         console.error("Assignment sync failed:", error);
-        alert("Unable to sync assignments.");
+        alert("Unable to sync assignments");
     }
 }
 
