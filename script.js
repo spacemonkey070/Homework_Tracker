@@ -42,8 +42,9 @@ async function loadCanvasHomework() {
 
             if (!isCurrentSchoolYear(a.dueDate)) return;
 
-            if (!homework.some(hw => hw.name === a.title)) {
+            if (!homework.some(hw => hw.canvasID === a.id)) {
                 homework.push({
+                    canvasID: a.id,
                     class: a.courseName,
                     name: a.title,
                     due: a.dueDate.split("T")[0],
