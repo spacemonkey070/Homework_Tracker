@@ -39,6 +39,9 @@ async function loadCanvasHomework() {
         const assignments = await response.json();
 
         assignments.forEach(a => {
+            
+            if (!isCurrentSchoolYear(a.dueDate)) return;
+
             if (!homework.some(hw => hw.title === a.title)) {
                 homework.push({
                     class: a.courseName,
@@ -56,6 +59,31 @@ async function loadCanvasHomework() {
     } catch (err) {
         console.error(err);
     }
+}
+// Check if a due date is in the current school year
+function getCurrentSchoolYear() {
+    const now = new Date();
+
+    let startYear;
+
+    if (now.getMonth() >= 7) { // August+
+        startYear = now.getFullYear();
+    } else {
+        startYear = now.getFullYear() - 1;
+    }
+
+    return {
+        start: new Date(`${startYear}-08-01`),
+        end: new Date(`${startYear + 1}-07-31`)
+    };
+}
+
+function isCurrentSchoolYear(dueDate) {
+    const due = new Date(dueDate);
+    const schoolYear = getCurrentSchoolYear();
+
+    return due >= schoolYear.start &&
+           due <= schoolYear.end;
 }
 
 
