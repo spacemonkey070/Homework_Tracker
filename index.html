@@ -2,61 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Homework Tracker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Homework Tracker</h1>
-
-     <form id="hw-form">
-        <select id="class-input" placeholder="Class"></select>
-        <input type="text" id="name-input" placeholder="Homework Name" required>
-
-        <!-- Date + Time -->
-        <input type="date" id="date-input" placeholder="mm/dd/yyyy" required>
-        <input type="time" id="time-input" placeholder="hh:mm" required>
-        
-        <input type="text" id="info-input" placeholder="Description">
-        <button type="submit">Add Homework</button>
-    </form>
-
-    <div class="dropdown">
-        <h2 id="unfinished-toggle">
-            <span class="arrow">▼</span> Unfinished Homework 
-        </h2>
-        <div id="unfinished-container"></div>
-    </div>
-
-    <div class="dropdown">
-        <h2 id="finished-toggle">
-            <span class="arrow">▼</span> Finished Homework 
-        </h2>
-        <div id="finished-container"></div>
-    </div>
-
-    <div id="progress-circle">
-        <svg viewBox="0 0 36 36" class="circular-chart">
-            <path class="circle-bg"
-                d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"/>
-            <path id="circle-progress"
-                class="circle"
-                stroke-dasharray="0, 100"
-                d="m18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"/>
-        </svg>
-
-        <div id="circle-text">0 / 0</div>
-    </div>
-
-    <div id="progress-container">
-        <div id="progress-bar"></div>
-    </div>
-    
-    <div id="hw-list"></div>
-
     <div id="hamburger">&#9776;</div>
     <div id="sidebar">
         <h2>Menu</h2>
@@ -64,8 +14,57 @@
         <button onclick="window.location.href='classes/ClassIndex.html'">Classes</button>
         <button onclick="window.location.href='Calender/CalenderIndex.html'">Calendar</button>
         <button onclick="window.location.href='Settings/SettingsIndex.html'">Settings</button>
-
     </div>
+
+    <main class="page">
+        <header class="top">
+            <div>
+                <h1>Homework</h1>
+                <p id="subtitle">Nothing due this week</p>
+            </div>
+
+            <div id="progress-circle">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg"
+                        d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    <path id="circle-progress"
+                        class="circle"
+                        stroke-dasharray="0, 100"
+                        d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                </svg>
+                <div id="circle-text">0 / 0</div>
+                <div id="circle-label">this week</div>
+            </div>
+        </header>
+
+        <button id="add-toggle" type="button" aria-expanded="false">+ Add</button>
+
+        <form id="hw-form">
+            <input type="text" id="name-input" placeholder="Homework name" required>
+            <select id="class-input"></select>
+            <input type="date" id="date-input" required>
+            <input type="time" id="time-input" required>
+            <button type="submit">Add homework</button>
+        </form>
+
+        <section class="dropdown" id="unfinished-section">
+            <h2 id="unfinished-toggle">
+                <span class="arrow">▼</span> Unfinished <span class="count" id="unfinished-count">0</span>
+            </h2>
+            <div id="unfinished-container"></div>
+        </section>
+
+        <section class="dropdown collapsed" id="finished-section">
+            <h2 id="finished-toggle">
+                <span class="arrow closed">▼</span> Finished <span class="count" id="finished-count">0</span>
+            </h2>
+            <div id="finished-container"></div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
