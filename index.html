@@ -20,49 +20,59 @@
         <header class="top">
             <div>
                 <h1>Homework</h1>
-                <p id="subtitle">Nothing due this week</p>
+                <p id="subtitle"></p>
             </div>
 
-            <div id="progress-circle">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                    <path class="circle-bg"
-                        d="M18 2.0845
-                        a 15.9155 15.9155 0 0 1 0 31.831
-                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                    <path id="circle-progress"
-                        class="circle"
-                        stroke-dasharray="0, 100"
-                        d="M18 2.0845
-                        a 15.9155 15.9155 0 0 1 0 31.831
-                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                </svg>
-                <div id="circle-text">0 / 0</div>
-                <div id="circle-label">this week</div>
+            <div class="top-right">
+                <div class="progress-text">
+                    <div id="circle-text">0 of 0 done</div>
+                    <div class="progress-sub">this week</div>
+                </div>
+                <div id="progress-circle">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path id="circle-progress"
+                            class="circle"
+                            stroke-dasharray="0, 100"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                </div>
+                <button id="add-toggle" type="button" aria-expanded="false">Add homework</button>
             </div>
         </header>
-
-        <button id="add-toggle" type="button" aria-expanded="false">+ Add</button>
 
         <form id="hw-form">
             <input type="text" id="name-input" placeholder="Homework name" required>
             <select id="class-input"></select>
             <input type="date" id="date-input" required>
             <input type="time" id="time-input" required>
-            <button type="submit">Add homework</button>
+            <button type="submit">Save homework</button>
         </form>
 
         <section class="dropdown" id="unfinished-section">
             <h2 id="unfinished-toggle">
                 <span class="arrow">▼</span> Unfinished <span class="count" id="unfinished-count">0</span>
             </h2>
-            <div id="unfinished-container"></div>
+            <div class="table">
+                <div class="row head">
+                    <span></span><span>Assignment</span><span>Class</span><span class="due-col">Due</span><span></span>
+                </div>
+                <div id="unfinished-container"></div>
+            </div>
         </section>
 
         <section class="dropdown collapsed" id="finished-section">
             <h2 id="finished-toggle">
                 <span class="arrow closed">▼</span> Finished <span class="count" id="finished-count">0</span>
             </h2>
-            <div id="finished-container"></div>
+            <div class="table">
+                <div id="finished-container"></div>
+            </div>
         </section>
     </main>
 

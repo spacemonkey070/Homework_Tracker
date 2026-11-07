@@ -51,17 +51,20 @@ function getStatus(hw) {
     return "";
 }
 
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 function dueLabel(hw) {
     const due = getDueDate(hw);
     const days = Math.round((startOfDay(due) - startOfDay(new Date())) / 86400000);
-    const time = hw.time ? ` · ${formatTime(hw.time)}` : "";
-    const date = `${MONTHS[due.getMonth()]} ${due.getDate()}`;
 
-    if (hw.finished) return date + time;
-    if (getStatus(hw) === "overdue") return `Overdue · ${date}${time}`;
-    if (days === 0) return `Today${time}`;
-    if (days === 1) return `Tomorrow${time}`;
-    return date + time;
+    let day;
+    if (days === 0) day = "Today";
+    else if (days === 1) day = "Tomorrow";
+    else if (days === -1) day = "Yesterday";
+    else if (Math.abs(days) < 7) day = WEEKDAYS[due.getDay()];
+    else day = `${MONTHS[due.getMonth()]} ${due.getDate()}`;
+
+    return hw.time ? `${day}, ${formatTime(hw.time)}` : day;
 }
 
 /* ---------- add HW ---------- */
@@ -70,7 +73,7 @@ const addToggle = document.getElementById("add-toggle");
 
 function setFormOpen(open) {
     form.classList.toggle("open", open);
-    addToggle.textContent = open ? "Close" : "+ Add";
+    addToggle.textContent = open ? "Close" : "Add homework";
     addToggle.setAttribute("aria-expanded", open);
     if (open) document.getElementById("name-input").focus();
 }
@@ -186,7 +189,7 @@ function renderHW() {
         const classColor = colorMap[hw.class] || "#888888";
 
         const item = document.createElement("div");
-        item.classList.add("hw-item");
+        item.classList.add("hw-item", "row");
         if (hw.finished) item.classList.add("hw-finished");
         if (status) item.classList.add("hw-" + status);
 
@@ -200,24 +203,34 @@ function renderHW() {
         name.className = "hw-name";
         name.textContent = hw.name;
 
-        const chip = document.createElement("span");
-        chip.className = "hw-class";
-        chip.textContent = hw.class || "";
-        chip.style.background = `color-mix(in srgb, ${classColor} 28%, transparent)`;
-        chip.style.color = classColor;
-        if (!hw.class) chip.style.display = "none";
+        const cls = document.createElement("span");
+        cls.className = "hw-class";
+        if (hw.class) {
+            const dot = document.createElement("span");
+            dot.className = "class-dot";
+            dot.style.background = classColor;
+            const label = document.createElement("span");
+            label.textContent = hw.class;
+            cls.append(dot, label);
+        }
 
         const due = document.createElement("span");
         due.className = "hw-due";
-        due.textContent = dueLabel(hw);
+        if (status) {
+            const pill = document.createElement("span");
+            pill.className = "pill pill-" + status;
+            pill.textContent = status === "overdue" ? "Overdue" : "Due today";
+            due.appendChild(pill);
+        }
+        due.appendChild(document.createTextNode(dueLabel(hw)));
 
         const del = document.createElement("button");
         del.className = "delete-btn";
         del.type = "button";
-        del.textContent = "🗑️";
+        del.textContent = "✕";
         del.setAttribute("aria-label", "Delete homework");
 
-        item.append(finishBtn, name, chip, due, del);
+        item.append(finishBtn, name, cls, due, del);
 
         finishBtn.addEventListener("click", () => {
             hw.finished = !hw.finished;
@@ -266,13 +279,11 @@ function updateProgress() {
     const percent = total === 0 ? 0 : Math.round((done / total) * 100);
 
     document.getElementById("circle-progress").style.strokeDasharray = `${percent}, 100`;
-    document.getElementById("circle-text").textContent = `${done} / ${total}`;
+    document.getElementById("circle-text").textContent = `${done} of ${total} done`;
 
-    const left = total - done;
+    const last = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 1);
     document.getElementById("subtitle").textContent =
-        total === 0 ? "Nothing due this week" :
-        left === 0 ? "All done for this week" :
-        `${left} left this week`;
+        `Week of ${MONTHS[start.getMonth()]} ${start.getDate()} to ${MONTHS[last.getMonth()]} ${last.getDate()}`;
 }
 
 /* ---------- sidebar ---------- */
