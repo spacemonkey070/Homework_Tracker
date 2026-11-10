@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     syncButton.addEventListener("click", syncAssignments);
 });
 
+document.getElementById("syncBtn")
+  .addEventListener("click", syncToGoogleCalendar);
+
 async function syncAssignments() {
     try {
         const response = await fetch(

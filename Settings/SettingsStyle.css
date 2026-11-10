@@ -21,3 +21,16 @@ button {
     border: none;
     cursor: pointer;
 }
+.sync-section { margin: 24px 0; }
+.sync-note { opacity: 0.7; font-size: 0.9rem; margin: 4px 0 12px; }
+.sync-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #4285f4;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.sync-btn:hover { filter: brightness(1.1); }
+.sync-btn:disabled { opacity: 0.6; cursor: default; }
