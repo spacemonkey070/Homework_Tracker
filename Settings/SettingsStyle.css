@@ -1,44 +1,15 @@
-:root,
-:root[data-theme="light"] {
-  --bg: #f4f5f8;
-  --surface: #ffffff;
-  --line: #e3e6ee;
-  --line-soft: #eceef4;
-  --text: #1c2130;
-  --muted: #5b6479;
-  --accent: #2f5be0;
-  --accent-soft: #e8eefc;
-  --accent-ink: #1d3f9e;
-  --btn-text: #ffffff;
-  --danger: #b3261e;
-  --danger-line: #e8b4b0;
-  --overdue-bg: #fdecee;
-  --overdue-line: #e9a2a8;
-  --today-bg: #fff6d6;
-  --today-line: #e6cf75;
-  --chip-bg: #eceef4;
-  color-scheme: light;
-}
-
-:root[data-theme="dark"] {
-  --bg: #0f1115;
-  --surface: #161922;
-  --line: #262b38;
-  --line-soft: #202432;
-  --text: #e6e8ec;
-  --muted: #9aa3b2;
-  --accent: #3b6cf0;
-  --accent-soft: #1f2a4a;
-  --accent-ink: #a9c0ff;
-  --btn-text: #ffffff;
-  --danger: #ff8a92;
-  --danger-line: #7a2f35;
-  --overdue-bg: #3a1d21;
-  --overdue-line: #7a2f35;
-  --today-bg: #3a331a;
-  --today-line: #7d6c24;
-  --chip-bg: #232733;
-  color-scheme: dark;
+:root {
+  /* Colors come from ../theme.css; these names are what this page's rules use */
+  --surface: var(--card);
+  --line: var(--border);
+  --line-soft: var(--border);
+  --btn-text: var(--on-accent);
+  --danger: var(--red);
+  --danger-line: var(--red);
+  --overdue-bg: var(--over-bg);
+  --overdue-line: var(--red);
+  --today-line: var(--yellow);
+  --chip-bg: var(--field);
 }
 
 * { box-sizing: border-box; }

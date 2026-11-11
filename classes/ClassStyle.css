@@ -1,8 +1,8 @@
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background: #1c1c1c;
-    color:#fff;
+    background: var(--bg);
+    color:var(--text);
 }
 
 h1 {
@@ -10,7 +10,7 @@ h1 {
     margin-top: 30px;
     font-family: 'inter', sans-serif;
     font-weight: 700;
-    color: #fff;
+    color: var(--text);
 } 
 
 #add-class-btn {
@@ -35,13 +35,14 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #2a2a2a;
+    background: var(--card);
     padding: 20px;
     width: 320px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    box-shadow: 0 0 15px var(--shadow);
     z-index: 1000;
-    color: #fff;
+    color: var(--text);
+    border: 1px solid var(--border);
 }
 
 #form-overlay {
@@ -65,15 +66,15 @@ h1 {
     width: 95%;
     padding: 6px;
     margin-top: 4px;
-    background: #1f1f1f;
-    border: 1px solid #444;
-    color: #fff;
+    background: var(--field);
+    border: 1px solid var(--border);
+    color: var(--text);
     border-radius: 6px;
 }
 
 #day-select label {
     font-size: 14px;
-    color: #ccc;
+    color: var(--text-2);
 }
 #day-select {
     display: flex;
@@ -95,10 +96,11 @@ h1 {
 
 .class-box {
     width: 240px;
-    background: #2a2a2a;
+    background: var(--card);
     border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    box-shadow: 0 0 8px var(--shadow);
     overflow: hidden;
+    border: 1px solid var(--border);
 }
 
 .class-box-top {
@@ -114,7 +116,7 @@ h1 {
 
 .class-box-content {
     padding: 12px;
-    color: #ccc;
+    color: var(--text-2);
 }
 
 #week-layout {
@@ -125,12 +127,13 @@ h1 {
 }
 
 .week-day {
-    background: #2a2a2a;
+    background: var(--card);
     padding: 10px;
     min-height: 500px;
     border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.4);
-    color: #fff;
+    box-shadow: 0 0 5px var(--shadow);
+    color: var(--text);
+    border: 1px solid var(--border);
 }
 
 .week-class-item {
@@ -176,13 +179,14 @@ h1 {
 }
 
 #delete-popup {
-    background: #2a2a2a;
+    background: var(--card);
     padding: 20px;
     border-radius: 10px;
     width: 260px;
     text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.6);
-    color: #fff;
+    box-shadow: 0 0 10px var(--shadow);
+    color: var(--text);
+    border: 1px solid var(--border);
 }
 
 #confirm-delete-btn {
@@ -211,7 +215,7 @@ h1 {
     top: 10px;
     left: 10px;
     z-index: 1000;
-    color: #fff;
+    color: var(--text);
 }
 
 #sidebar {
@@ -220,11 +224,12 @@ h1 {
     left: -350px; 
     width: 250px;
     height: 100%;
-    background: #2a2a2a;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    background: var(--sidebar-bg);
+    box-shadow: 2px 0 5px var(--shadow);
     padding: 20px;
     transition: left 0.3s ease;
     z-index: 999;
+    border-right: 1px solid var(--border);
 }
 #sidebar.open {
     left: 0;
@@ -235,8 +240,8 @@ h1 {
     padding: 10px;
     margin: 10px 0;
     font-size: 16px;
-    background: #3a3a3a;
-    color: #fff;
+    background: var(--field);
+    color: var(--text);
     border: none;
     border-radius: 6px;
     cursor: pointer;

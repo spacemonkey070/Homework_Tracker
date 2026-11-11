@@ -1,0 +1,55 @@
+/* Shared colors for every page. theme.js sets data-theme="light" or "dark" on <html>.
+   Dark is the default when no data-theme is set. */
+:root {
+    --bg: #111316;
+    --card: #15181c;
+    --field: #1d2126;
+    --border: #23272d;
+    --text: #e6e8eb;
+    --text-2: #9aa3ae;
+    --muted: #7d8590;
+    --accent: #7c9cf5;
+    --on-accent: #0d1a3d;
+    --track: #23272d;
+    --check-border: #4a505a;
+    --red: #f0645a;
+    --yellow: #f5c83c;
+    --over-bg: rgba(240, 100, 90, 0.08);
+    --today-bg: rgba(245, 200, 60, 0.07);
+    --pill-over-bg: rgba(240, 100, 90, 0.18);
+    --pill-over-text: #f4948c;
+    --pill-today-bg: rgba(245, 200, 60, 0.16);
+    --pill-today-text: #f2d36b;
+    --sidebar-bg: #1a1d21;
+    --accent-soft: #1f2a4a;
+    --accent-ink: #a9c0ff;
+    --shadow: rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    --bg: #fafaf9;
+    --card: #ffffff;
+    --field: #f1f0ec;
+    --border: #e2e0da;
+    --text: #1c1f23;
+    --text-2: #6b7280;
+    --muted: #6b7280;
+    --accent: #2f5fd0;
+    --on-accent: #ffffff;
+    --track: #e7e5e0;
+    --check-border: #c3c0b8;
+    --red: #d9473a;
+    --yellow: #e0a800;
+    --over-bg: #fdf1f0;
+    --today-bg: #fdf7e3;
+    --pill-over-bg: #fbd9d5;
+    --pill-over-text: #8c2a20;
+    --pill-today-bg: #f8e8a8;
+    --pill-today-text: #6b4e00;
+    --sidebar-bg: #ffffff;
+    --accent-soft: #e8eefc;
+    --accent-ink: #1d3f9e;
+    --shadow: rgba(0, 0, 0, 0.08);
+    color-scheme: light;
+}

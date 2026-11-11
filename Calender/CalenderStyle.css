@@ -1,7 +1,8 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #ffffff;
+    background: var(--bg);
+    color: var(--text);
 }
 /* Calendar grid */
 #calendar {
@@ -39,13 +40,18 @@ body {
     padding: 8px 16px;
     font-size: 16px;
     cursor: pointer;
+    background: var(--field);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
 }
 
 /* Each day cell */
 .day {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
     padding: 8px;
     overflow-y: auto;
+    background: var(--card);
 }
 
 .day strong {
@@ -54,7 +60,7 @@ body {
 }
 
 .empty-day{
-    background: #f5f5f5;
+    background: var(--field);
 }
 
 
@@ -68,6 +74,7 @@ body {
     top: 10px;
     left: 10px;
     z-index: 1000;
+    color: var(--text);
 }
 
 #sidebar {
@@ -76,11 +83,12 @@ body {
     left: -350px; 
     width: 250px;
     height: 100%;
-    background: #f2f2f2;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+    background: var(--sidebar-bg);
+    box-shadow: 2px 0 5px var(--shadow);
     padding: 20px;
     transition: left 0.3s ease;
     z-index: 999;
+    border-right: 1px solid var(--border);
 }
 #sidebar.open {
     left: 0;
@@ -91,4 +99,9 @@ body {
     padding: 10px;
     margin: 10px 0;
     font-size: 16px;
+    background: var(--field);
+    color: var(--text);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }

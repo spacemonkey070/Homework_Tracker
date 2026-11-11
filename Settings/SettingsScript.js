@@ -13,7 +13,7 @@
   };
 
   var DEFAULTS = {
-    theme: 'light',
+    theme: 'dark',
     highlightOverdue: true,
     highlightToday: true,
     showTime: true,
