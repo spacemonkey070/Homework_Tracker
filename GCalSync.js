@@ -1,4 +1,3 @@
-
 const GCAL_CLIENT_ID = "627480619372-m7mt3f59ep74fjf59g6djkctfv6el8gd.apps.googleusercontent.com";
 const GCAL_SCOPE = "https://www.googleapis.com/auth/calendar.app.created";
 const GCAL_API = "https://www.googleapis.com/calendar/v3";
@@ -11,7 +10,28 @@ function gcalGetHomework() {
   return all.filter(h => !h.finished && h.due && !isNaN(new Date(h.due)));
 }
 
-function gcalToken() {
+// Google tokens last about an hour. Keeping the last one for this tab lets
+// automatic syncs run without opening a sign-in popup.
+function gcalCachedToken() {
+  try {
+    const t = JSON.parse(sessionStorage.getItem("gcalToken") || "null");
+    return t && t.exp > Date.now() + 30000 ? t.token : null;
+  } catch (e) { return null; }
+}
+
+function gcalSaveToken(resp) {
+  try {
+    sessionStorage.setItem("gcalToken", JSON.stringify({
+      token: resp.access_token,
+      exp: Date.now() + (Number(resp.expires_in) || 3600) * 1000,
+    }));
+  } catch (e) {}
+}
+
+function gcalToken(interactive = true) {
+  const cached = gcalCachedToken();
+  if (cached) return Promise.resolve(cached);
+  if (!interactive) return Promise.reject(new Error("Sign-in needed"));
   return new Promise((resolve, reject) => {
     if (!window.google || !google.accounts) {
       return reject(new Error("Google sign-in script hasn't loaded yet."));
@@ -19,8 +39,11 @@ function gcalToken() {
     const client = google.accounts.oauth2.initTokenClient({
       client_id: GCAL_CLIENT_ID,
       scope: GCAL_SCOPE,
-      callback: resp =>
-        resp.error ? reject(new Error(resp.error)) : resolve(resp.access_token),
+      callback: resp => {
+        if (resp.error) return reject(new Error(resp.error));
+        gcalSaveToken(resp);
+        resolve(resp.access_token);
+      },
       error_callback: err => reject(new Error(err.type || "Sign-in cancelled")),
     });
     client.requestAccessToken({ prompt: "" });
@@ -69,16 +92,23 @@ function gcalKey(h) {
   return (h.class + "|" + h.name + "|" + h.due).replace(/\s+/g, " ");
 }
 
-async function syncToGoogleCalendar() {
-  if (!GCAL_CONFIGURED) return downloadHomeworkIcs();
-  const btn = document.getElementById("syncBtn");
+let gcalBusy = false;
+
+// Called by the button (which passes a click event). The automatic sync calls
+// syncToGoogleCalendar({ quiet: true }): no button text, popups or prompts.
+async function syncToGoogleCalendar(arg) {
+  const quiet = !!(arg && arg.quiet === true);
+  if (!GCAL_CONFIGURED) return quiet ? undefined : downloadHomeworkIcs();
+  if (gcalBusy) return;
+  gcalBusy = true;
+  const btn = quiet ? null : document.getElementById("syncBtn");
   const label = btn ? btn.textContent : "";
   const setLabel = t => { if (btn) { btn.textContent = t; } };
   if (btn) btn.disabled = true;
 
   try {
     setLabel("Signing in…");
-    const token = await gcalToken();
+    const token = await gcalToken(!quiet);
     const calId = await gcalGetOrCreateCalendar(token);
     const base = "/calendars/" + encodeURIComponent(calId) + "/events";
 
@@ -137,19 +167,35 @@ async function syncToGoogleCalendar() {
     }
 
     setLabel("Synced ✓ (+" + added + " / −" + removed + ")");
+    localStorage.setItem("gcalLastSync", String(Date.now()));
+    window.dispatchEvent(new Event("gcal-synced"));
   } catch (err) {
     console.error(err);
+    if (quiet) return;
     setLabel("Sync failed");
     if (confirm("Couldn't connect to Google Calendar (" + err.message +
         ").\n\nDownload a calendar file instead? It works with Google, Apple and Outlook.")) {
       downloadHomeworkIcs();
     }
   } finally {
+    gcalBusy = false;
     if (btn) {
       btn.disabled = false;
       setTimeout(() => { btn.textContent = label; }, 3000);
     }
   }
+}
+
+// Syncs quietly if "Sync automatically" is on in Settings and Google sign-in
+// is still valid. Call it after homework is saved. Waits a moment so a burst
+// of edits turns into one sync.
+let gcalAutoTimer;
+function gcalAutoSync() {
+  let on = false;
+  try { on = !!JSON.parse(localStorage.getItem("hwSettings") || "{}").gcalAuto; } catch (e) {}
+  if (!on || !GCAL_CONFIGURED || !gcalCachedToken()) return;
+  clearTimeout(gcalAutoTimer);
+  gcalAutoTimer = setTimeout(() => syncToGoogleCalendar({ quiet: true }), 1500);
 }
 
 // Universal fallback: a .ics file any calendar app can import.
