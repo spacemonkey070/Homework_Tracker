@@ -1,27 +1,170 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="SettingsStyle.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings – HW Tracker</title>
+<script>
+/* Apply the saved theme before the page paints so it doesn't flash. */
+(function () {
+  try {
+    var s = JSON.parse(localStorage.getItem('hwSettings') || '{}');
+    var t = s.theme || 'light';
+    if (t === 'auto') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="SettingsStyle.css">
 </head>
 <body>
-    <h1>Settings</h1>
-    <h2>Canvas Integration</h2>
+<div class="layout">
 
-    <div id="canvas-settings">
-        <label>Canvas API Token:</label><br>
-        <input type="text" id="canvas-api-token" style="width:300px;"><br>
-    </div>
-    <button id="sync-assignments-btn" style="margin-top:20px;">
-        Sync Selected Courses
-    </button>
-    <section class="sync-section">
-    <h3>Google Calendar</h3>
-    <p class="sync-note">Adds your unfinished homework to a "HW Tracker" calendar.</p>
-    <button id="syncBtn" class="sync-btn" type="button">Sync to Google Calendar</button>
-</section>
+  <nav class="nav" aria-label="Settings sections">
+    <a class="back" href="../index.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      Back to Homework
+    </a>
+    <div class="sep"></div>
+    <div class="nav-title">Settings</div>
+    <a href="#appearance" data-tab="appearance">Appearance</a>
+    <a href="#homework" data-tab="homework">Homework</a>
+    <a href="#canvas" data-tab="canvas">Canvas</a>
+    <a href="#calendar" data-tab="calendar">Google Calendar</a>
+    <a href="#data" data-tab="data">Data</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- Appearance -->
+    <section id="appearance" class="card" data-panel>
+      <h1>Appearance</h1>
+      <p class="muted">Choose how the tracker looks.</p>
+      <div class="themes" role="group" aria-label="Theme">
+        <button type="button" class="theme" data-theme-choice="dark" aria-pressed="false">
+          <span class="pv" style="background:#0f1115"><i style="width:60%;background:#2b3a5c"></i><i style="width:90%;background:#232733"></i><i style="width:75%;background:#232733"></i></span>
+          Dark
+        </button>
+        <button type="button" class="theme" data-theme-choice="light" aria-pressed="false">
+          <span class="pv" style="background:#f4f5f8;border:1px solid #e3e6ee"><i style="width:60%;background:#c9d6fa"></i><i style="width:90%;background:#e3e6ee"></i><i style="width:75%;background:#e3e6ee"></i></span>
+          Light
+        </button>
+        <button type="button" class="theme" data-theme-choice="auto" aria-pressed="false">
+          <span class="pv" style="background:linear-gradient(90deg,#0f1115 50%,#f4f5f8 50%)"><i style="width:60%;background:#7d8fc4"></i><i style="width:90%;background:#8a90a0"></i></span>
+          Match device
+        </button>
+      </div>
+      <label class="row">
+        <span class="t">Highlight overdue in red</span>
+        <input type="checkbox" data-setting="highlightOverdue">
+      </label>
+      <label class="row">
+        <span class="t">Highlight due today in yellow</span>
+        <input type="checkbox" data-setting="highlightToday">
+      </label>
+    </section>
+
+    <!-- Homework -->
+    <section id="homework" class="card" data-panel hidden>
+      <h1>Homework</h1>
+      <p class="muted">Changes show in the preview below and on your other pages.</p>
+      <label class="row">
+        <span class="t">Show due time</span>
+        <input type="checkbox" data-setting="showTime">
+      </label>
+      <label class="row">
+        <span><span class="t">Progress ring counts</span><span class="d">What the ring on the Homework List measures.</span></span>
+        <select data-setting="ringScope">
+          <option value="week">This week only</option>
+          <option value="all">All homework</option>
+        </select>
+      </label>
+      <label class="row">
+        <span class="t">Week starts on</span>
+        <select data-setting="weekStart">
+          <option value="0">Sunday</option>
+          <option value="1">Monday</option>
+        </select>
+      </label>
+      <div class="preview" id="preview" aria-label="Preview">
+        <div class="pr overdue"><span class="chip">MGT2203</span><span class="pn">Read chapter 4</span><span class="due">Yesterday<span class="time"> 11:59 PM</span></span></div>
+        <div class="pr today"><span class="chip">INT2134</span><span class="pn">Arrays lab</span><span class="due">Today<span class="time"> 5:00 PM</span></span></div>
+        <div class="pr"><span class="chip">INT2103</span><span class="pn">Case study</span><span class="due">Friday<span class="time"> 11:59 PM</span></span></div>
+      </div>
+    </section>
+
+    <!-- Canvas -->
+    <section id="canvas" class="card" data-panel hidden>
+      <h1>Canvas</h1>
+      <p class="muted">Pull your unfinished Canvas assignments into the tracker.</p>
+      <div id="canvas-settings" class="field">
+        <label for="canvas-api-token" class="t">Canvas API token</label>
+        <input type="password" id="canvas-api-token" autocomplete="off" spellcheck="false">
+        <span class="d">Saved in this browser only.</span>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn" id="sync-assignments-btn">Sync Selected Courses</button>
+      </div>
+      <p class="msg" id="canvasMsg" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- Google Calendar -->
+    <section id="calendar" class="card sync-section" data-panel hidden>
+      <h1>Google Calendar</h1>
+      <p class="sync-note">Adds your unfinished homework to a "HW Tracker" calendar.</p>
+      <div class="status-line">
+        <span class="pill" id="gcalPill">Not connected</span>
+        <span class="muted" id="gcalLast"></span>
+      </div>
+      <div class="actions">
+        <button id="syncBtn" class="btn sync-btn" type="button">Sync to Google Calendar</button>
+      </div>
+      <label class="row">
+        <span><span class="t">Sync automatically</span><span class="d">Updates the calendar when your homework changes. Works for about an hour after you sign in, then press Sync once more.</span></span>
+        <input type="checkbox" data-setting="gcalAuto">
+      </label>
+    </section>
+
+    <!-- Data -->
+    <section id="data" class="card" data-panel hidden>
+      <h1>Data</h1>
+      <p class="muted" id="countLine"></p>
+      <div class="row">
+        <span><span class="t">Export homework</span><span class="d">Download a backup file with your homework and settings.</span></span>
+        <button type="button" class="btn ghost" id="exportBtn">Export</button>
+      </div>
+      <div class="row">
+        <span><span class="t">Import homework</span><span class="d">Replace your homework with a backup file.</span></span>
+        <button type="button" class="btn ghost" id="importBtn">Import</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <div class="row">
+        <span><span class="t">Reset settings</span><span class="d">Put every setting back to its default.</span></span>
+        <button type="button" class="btn ghost" id="resetBtn">Reset</button>
+      </div>
+      <div class="row">
+        <span><span class="t">Clear all homework</span><span class="d">Removes everything saved in this browser.</span></span>
+        <button type="button" class="btn danger" id="clearBtn">Clear</button>
+      </div>
+    </section>
+
+  </main>
 </div>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="gcal-sync.js"></script>
-    <script src="SettingsScript.js"></script>
+
+<dialog id="confirmDialog">
+  <form method="dialog">
+    <p id="confirmText"></p>
+    <div class="actions">
+      <button type="submit" value="cancel" class="btn ghost">Cancel</button>
+      <button type="submit" value="ok" class="btn" id="confirmOk">Confirm</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="gcal-sync.js"></script>
+<script src="SettingsScript.js"></script>
 </body>
 </html>
