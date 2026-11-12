@@ -27,5 +27,12 @@
     if (e.key === KEY || e.key === null) apply();
   });
 
+  // Back/forward can restore a page from the browser's cache without re-running
+  // scripts, so re-check the saved theme whenever the page is shown again.
+  window.addEventListener('pageshow', apply);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) apply();
+  });
+
   window.HWTheme = { apply: apply };
 })();

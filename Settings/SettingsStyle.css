@@ -2,7 +2,7 @@
   /* Colors come from ../theme.css; these names are what this page's rules use */
   --surface: var(--card);
   --line: var(--border);
-  --line-soft: var(--border);
+  --line-soft: var(--divider);
   --btn-text: var(--on-accent);
   --danger: var(--red);
   --danger-line: var(--red);

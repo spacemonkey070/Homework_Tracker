@@ -174,14 +174,14 @@ h1 {
     height: 34px;
     color: var(--muted);
     font-size: 12px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--divider);
 }
 
 .due-col { text-align: right; }
 
 .hw-item {
     min-height: 48px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--divider);
     box-shadow: inset 3px 0 0 transparent;
 }
 
@@ -320,7 +320,7 @@ h1 {
     cursor: pointer;
 }
 
-#sidebar button:hover { background: var(--border); }
+#sidebar button:hover { background: var(--divider); }
 
 /* Phones: drop the header row and stack each item */
 @media (max-width: 680px) {
