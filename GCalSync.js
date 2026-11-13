@@ -3,11 +3,29 @@ const GCAL_SCOPE = "https://www.googleapis.com/auth/calendar.app.created";
 const GCAL_API = "https://www.googleapis.com/calendar/v3";
 const GCAL_CONFIGURED = !GCAL_CLIENT_ID.startsWith("PASTE_");
 
+// Google event color chosen in Settings ("" = the calendar's default color).
+// Values are Google's event colorIds, "1" to "11".
+function gcalColorId() {
+  try {
+    return String(JSON.parse(localStorage.getItem("hwSettings") || "{}").gcalColor || "");
+  } catch (e) { return ""; }
+}
+
+// "YYYY-MM-DD" + optional "HH:MM" -> local Date (no time = 11:59 PM), the same
+// way the Homework List reads it. new Date("YYYY-MM-DD") alone means midnight
+// UTC, which lands on the evening before in US time zones.
+function gcalDueDate(h) {
+  const [y, m, d] = String(h.due).split("-").map(Number);
+  let hh = 23, mm = 59;
+  if (h.time) [hh, mm] = String(h.time).split(":").map(Number);
+  return new Date(y, m - 1, d, hh, mm);
+}
+
 // Unfinished homework that has a valid due date
 function gcalGetHomework() {
   let all = [];
   try { all = JSON.parse(localStorage.getItem("homework") || "[]"); } catch (e) {}
-  return all.filter(h => !h.finished && h.due && !isNaN(new Date(h.due)));
+  return all.filter(h => !h.finished && h.due && !isNaN(gcalDueDate(h)));
 }
 
 // Google tokens last about an hour. Keeping the last one for this tab lets
@@ -89,7 +107,7 @@ async function gcalGetOrCreateCalendar(token) {
 }
 
 function gcalKey(h) {
-  return (h.class + "|" + h.name + "|" + h.due).replace(/\s+/g, " ");
+  return (h.class + "|" + h.name + "|" + h.due + "|" + (h.time || "")).replace(/\s+/g, " ");
 }
 
 let gcalBusy = false;
@@ -119,6 +137,7 @@ async function syncToGoogleCalendar(arg) {
     // What's already there
     setLabel("Syncing…");
     const existing = new Map(); // key -> event id
+    const existingColor = new Map(); // key -> colorId ("" = default)
     let pageToken = "";
     do {
       const q = "?maxResults=250&singleEvents=true" +
@@ -128,7 +147,10 @@ async function syncToGoogleCalendar(arg) {
         const k = ev.extendedProperties &&
           ev.extendedProperties.private &&
           ev.extendedProperties.private.hwKey;
-        if (k) existing.set(k, ev.id);
+        if (k) {
+          existing.set(k, ev.id);
+          existingColor.set(k, ev.colorId || "");
+        }
       });
       pageToken = data.nextPageToken || "";
     } while (pageToken);
@@ -148,10 +170,11 @@ async function syncToGoogleCalendar(arg) {
     }
 
     // Add events that aren't on the calendar yet
+    const color = gcalColorId();
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     for (const [k, h] of wanted) {
       if (existing.has(k)) continue;
-      const start = new Date(h.due);
+      const start = gcalDueDate(h);
       const end = new Date(start.getTime() + 30 * 60000);
       await gcalFetch(token, base, {
         method: "POST",
@@ -160,13 +183,25 @@ async function syncToGoogleCalendar(arg) {
           start: { dateTime: start.toISOString(), timeZone: tz },
           end: { dateTime: end.toISOString(), timeZone: tz },
           reminders: { useDefault: false, overrides: [{ method: "popup", minutes: 60 }] },
+          ...(color ? { colorId: color } : {}),
           extendedProperties: { private: { hwKey: k } },
         }),
       });
       added++;
     }
 
-    setLabel("Synced ✓ (+" + added + " / −" + removed + ")");
+    // Recolor events that are already there if the chosen color changed
+    let recolored = 0;
+    for (const [k, id] of existing) {
+      if (!wanted.has(k) || (existingColor.get(k) || "") === color) continue;
+      await gcalFetch(token, base + "/" + encodeURIComponent(id), {
+        method: "PATCH",
+        body: JSON.stringify({ colorId: color || null }),
+      });
+      recolored++;
+    }
+
+    setLabel("Synced ✓ (+" + added + " / −" + removed + (recolored ? " / " + recolored + " recolored" : "") + ")");
     localStorage.setItem("gcalLastSync", String(Date.now()));
     window.dispatchEvent(new Event("gcal-synced"));
   } catch (err) {
@@ -211,7 +246,7 @@ function downloadHomeworkIcs() {
 
   const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//HW Tracker//EN"];
   hw.forEach(h => {
-    const start = new Date(h.due);
+    const start = gcalDueDate(h);
     const end = new Date(start.getTime() + 30 * 60000);
     lines.push(
       "BEGIN:VEVENT",

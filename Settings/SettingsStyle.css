@@ -252,3 +252,39 @@ dialog p { margin: 0 0 8px; font-size: 15px; }
 .sync-note { color: var(--muted); font-size: 14px; margin: 0; }
 .sync-btn:hover { filter: brightness(1.1); }
 #reminder-boxes label { display: block; margin: 5px 0; }
+
+/* Google Calendar event color picker */
+.row.stack { flex-direction: column; align-items: flex-start; }
+.swatches { display: flex; flex-wrap: wrap; gap: 4px; }
+.sw {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.sw::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--c, transparent);
+  border: 1px solid var(--border);
+}
+.sw-default::before { border: 2px dashed var(--border); background: var(--field); }
+.sw[aria-pressed="true"]::before { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--text); }
+.sw[aria-pressed="true"]::after {
+  content: "\2713";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.sw-default[aria-pressed="true"]::after { color: var(--text); }

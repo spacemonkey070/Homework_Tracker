@@ -19,7 +19,8 @@
     showTime: true,
     ringScope: 'week',
     weekStart: '1',
-    gcalAuto: false
+    gcalAuto: false,
+    gcalColor: ''
   };
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
@@ -105,6 +106,7 @@
     });
     applyTheme();
     updatePreview();
+    updateSwatches();
   }
 
   $$('[data-setting]').forEach(function (el) {
@@ -118,6 +120,21 @@
         if (hasGcalToken()) runGcalAuto();
         else toast('Press Sync to Google Calendar once, then auto-sync takes over');
       }
+    });
+  });
+
+  function updateSwatches() {
+    $$('[data-gcal-color]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.gcalColor === String(settings.gcalColor || '')));
+    });
+  }
+  $$('[data-gcal-color]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      settings.gcalColor = btn.dataset.gcalColor;
+      saveSettings(settings);
+      updateSwatches();
+      toast('Saved');
+      if (settings.gcalAuto && hasGcalToken()) runGcalAuto();
     });
   });
 
