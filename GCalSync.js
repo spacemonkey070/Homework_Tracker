@@ -1,7 +1,32 @@
+// ---------------------------------------------------------------------------
+// HW Tracker: Google Calendar sync
+//
+// Reads unfinished homework from localStorage "homework" (class, name, due,
+// time, finished) and mirrors it to a "HW Tracker" Google calendar.
+//
+// Date/time rules (the fix):
+//   * "due" is a calendar date ("YYYY-MM-DD") and "time" is a local clock time.
+//     Both are built into a LOCAL Date, never parsed with new Date("YYYY-MM-DD")
+//     (that means midnight UTC, which is the evening before in US time zones).
+//   * Events are sent to Google as local wall-clock time plus an explicit IANA
+//     time zone, so Google never has to guess.
+//   * Every sync also repairs events that are already on the calendar but have
+//     the wrong start/end, and removes duplicate copies.
+//
+// Public functions used by the rest of the site (unchanged):
+//   syncToGoogleCalendar, gcalAutoSync, downloadHomeworkIcs, gcalColorId
+// ---------------------------------------------------------------------------
+
 const GCAL_CLIENT_ID = "627480619372-m7mt3f59ep74fjf59g6djkctfv6el8gd.apps.googleusercontent.com";
 const GCAL_SCOPE = "https://www.googleapis.com/auth/calendar.app.created";
 const GCAL_API = "https://www.googleapis.com/calendar/v3";
 const GCAL_CONFIGURED = !GCAL_CLIENT_ID.startsWith("PASTE_");
+
+const GCAL_DEFAULT_HOUR = 23;     // no time given -> 11:59 PM
+const GCAL_DEFAULT_MINUTE = 59;
+const GCAL_EVENT_MINUTES = 30;    // event length
+
+// ----- Settings -------------------------------------------------------------
 
 // Google event color chosen in Settings ("" = the calendar's default color).
 // Values are Google's event colorIds, "1" to "11".
@@ -11,22 +36,91 @@ function gcalColorId() {
   } catch (e) { return ""; }
 }
 
-// "YYYY-MM-DD" + optional "HH:MM" -> local Date (no time = 11:59 PM), the same
-// way the Homework List reads it. new Date("YYYY-MM-DD") alone means midnight
-// UTC, which lands on the evening before in US time zones.
-function gcalDueDate(h) {
-  const [y, m, d] = String(h.due).split("-").map(Number);
-  let hh = 23, mm = 59;
-  if (h.time) [hh, mm] = String(h.time).split(":").map(Number);
-  return new Date(y, m - 1, d, hh, mm);
+function gcalTimeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch (e) { return "UTC"; }
 }
+
+// ----- Date / time handling -------------------------------------------------
+
+// Accepts "23:59", "23:59:00", "9:05 PM", "9 pm". Returns [hours, minutes] or null.
+function gcalParseTime(value) {
+  const m = String(value).trim().match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*(am|pm)?$/i);
+  if (!m) return null;
+  let hh = Number(m[1]);
+  const mm = m[2] ? Number(m[2]) : 0;
+  const ap = m[3] ? m[3].toLowerCase() : "";
+  if (ap === "pm" && hh < 12) hh += 12;
+  if (ap === "am" && hh === 12) hh = 0;
+  if (hh > 23 || mm > 59) return null;
+  return [hh, mm];
+}
+
+// Builds a local Date and rejects impossible dates like Feb 31.
+function gcalMakeLocal(y, mo, d, hh, mm) {
+  const date = new Date(y, mo - 1, d, hh, mm, 0, 0);
+  const ok = date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === d;
+  return ok ? date : new Date(NaN);
+}
+
+// Homework item -> local Date for when it is due (Invalid Date if unusable).
+function gcalDueDate(h) {
+  if (!h || !h.due) return new Date(NaN);
+  const due = String(h.due).trim();
+  const t = h.time ? gcalParseTime(h.time) : null;
+
+  // Plain date: use the time field, or 11:59 PM when there isn't one.
+  const plain = due.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (plain) {
+    const hh = t ? t[0] : GCAL_DEFAULT_HOUR;
+    const mm = t ? t[1] : GCAL_DEFAULT_MINUTE;
+    return gcalMakeLocal(Number(plain[1]), Number(plain[2]), Number(plain[3]), hh, mm);
+  }
+
+  // Full timestamp (for example a Canvas "...Z" value): it already names an
+  // exact moment, so read it as one and show it in local time.
+  const full = new Date(due);
+  if (isNaN(full)) return full;
+  if (t) full.setHours(t[0], t[1], 0, 0);
+  return full;
+}
+
+// Local wall-clock text for Google, with no "Z" and no offset: 2026-11-20T23:59:00
+function gcalLocalStamp(d) {
+  const p = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) +
+    "T" + p(d.getHours()) + ":" + p(d.getMinutes()) + ":00";
+}
+
+// Start and end for one homework item, as Google expects them.
+function gcalEventTimes(h, tz) {
+  const start = gcalDueDate(h);
+  const end = new Date(start.getTime() + GCAL_EVENT_MINUTES * 60000);
+  return {
+    startMs: start.getTime(),
+    endMs: end.getTime(),
+    start: { dateTime: gcalLocalStamp(start), timeZone: tz },
+    end: { dateTime: gcalLocalStamp(end), timeZone: tz },
+  };
+}
+
+// ----- Homework -------------------------------------------------------------
 
 // Unfinished homework that has a valid due date
 function gcalGetHomework() {
   let all = [];
   try { all = JSON.parse(localStorage.getItem("homework") || "[]"); } catch (e) {}
-  return all.filter(h => !h.finished && h.due && !isNaN(gcalDueDate(h)));
+  if (!Array.isArray(all)) return [];
+  return all.filter(h => h && !h.finished && h.due && !isNaN(gcalDueDate(h)));
 }
+
+// Same key format as before, so events made by older versions still match.
+function gcalKey(h) {
+  return (h.class + "|" + h.name + "|" + h.due + "|" + (h.time || "")).replace(/\s+/g, " ");
+}
+
+// ----- Sign-in --------------------------------------------------------------
 
 // Google tokens last about an hour. Keeping the last one for this tab lets
 // automatic syncs run without opening a sign-in popup.
@@ -44,6 +138,10 @@ function gcalSaveToken(resp) {
       exp: Date.now() + (Number(resp.expires_in) || 3600) * 1000,
     }));
   } catch (e) {}
+}
+
+function gcalClearToken() {
+  try { sessionStorage.removeItem("gcalToken"); } catch (e) {}
 }
 
 function gcalToken(interactive = true) {
@@ -68,6 +166,8 @@ function gcalToken(interactive = true) {
   });
 }
 
+// ----- Google Calendar API --------------------------------------------------
+
 async function gcalFetch(token, path, options = {}) {
   const res = await fetch(GCAL_API + path, {
     ...options,
@@ -78,6 +178,7 @@ async function gcalFetch(token, path, options = {}) {
   });
   if (res.status === 204) return null;
   if (!res.ok) {
+    if (res.status === 401) gcalClearToken(); // expired or revoked: sign in again next time
     const err = new Error("Google Calendar error " + res.status);
     err.status = res.status;
     throw err;
@@ -97,18 +198,13 @@ async function gcalGetOrCreateCalendar(token) {
   }
   const cal = await gcalFetch(token, "/calendars", {
     method: "POST",
-    body: JSON.stringify({
-      summary: "HW Tracker",
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    }),
+    body: JSON.stringify({ summary: "HW Tracker", timeZone: gcalTimeZone() }),
   });
   localStorage.setItem("gcalId", cal.id);
   return cal.id;
 }
 
-function gcalKey(h) {
-  return (h.class + "|" + h.name + "|" + h.due + "|" + (h.time || "")).replace(/\s+/g, " ");
-}
+// ----- Sync -----------------------------------------------------------------
 
 let gcalBusy = false;
 
@@ -129,6 +225,8 @@ async function syncToGoogleCalendar(arg) {
     const token = await gcalToken(!quiet);
     const calId = await gcalGetOrCreateCalendar(token);
     const base = "/calendars/" + encodeURIComponent(calId) + "/events";
+    const tz = gcalTimeZone();
+    const color = gcalColorId();
 
     // What should be on the calendar: unfinished homework with a due date
     const wanted = new Map();
@@ -136,8 +234,8 @@ async function syncToGoogleCalendar(arg) {
 
     // What's already there
     setLabel("Syncing…");
-    const existing = new Map(); // key -> event id
-    const existingColor = new Map(); // key -> colorId ("" = default)
+    const existing = new Map();   // key -> { id, colorId, startMs, endMs }
+    const duplicates = [];        // ids of extra copies of the same key
     let pageToken = "";
     do {
       const q = "?maxResults=250&singleEvents=true" +
@@ -147,61 +245,85 @@ async function syncToGoogleCalendar(arg) {
         const k = ev.extendedProperties &&
           ev.extendedProperties.private &&
           ev.extendedProperties.private.hwKey;
-        if (k) {
-          existing.set(k, ev.id);
-          existingColor.set(k, ev.colorId || "");
-        }
+        if (!k) return;
+        if (existing.has(k)) { duplicates.push(ev.id); return; }
+        existing.set(k, {
+          id: ev.id,
+          colorId: ev.colorId || "",
+          // All-day events have no dateTime; 0 never matches, so they get repaired.
+          startMs: ev.start && ev.start.dateTime ? new Date(ev.start.dateTime).getTime() : 0,
+          endMs: ev.end && ev.end.dateTime ? new Date(ev.end.dateTime).getTime() : 0,
+        });
       });
       pageToken = data.nextPageToken || "";
     } while (pageToken);
 
-    let added = 0, removed = 0;
+    let added = 0, removed = 0, fixed = 0, recolored = 0;
 
-    // Remove events for homework that's finished, deleted, or changed
-    for (const [k, id] of existing) {
-      if (!wanted.has(k)) {
-        try {
-          await gcalFetch(token, base + "/" + encodeURIComponent(id), { method: "DELETE" });
-          removed++;
-        } catch (e) {
-          if (e.status !== 404 && e.status !== 410) throw e;
-        }
+    // Remove duplicate copies
+    for (const id of duplicates) {
+      try {
+        await gcalFetch(token, base + "/" + encodeURIComponent(id), { method: "DELETE" });
+        removed++;
+      } catch (e) {
+        if (e.status !== 404 && e.status !== 410) throw e;
       }
     }
 
-    // Add events that aren't on the calendar yet
-    const color = gcalColorId();
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Remove events for homework that's finished, deleted, or changed
+    for (const [k, ev] of existing) {
+      if (wanted.has(k)) continue;
+      try {
+        await gcalFetch(token, base + "/" + encodeURIComponent(ev.id), { method: "DELETE" });
+        removed++;
+      } catch (e) {
+        if (e.status !== 404 && e.status !== 410) throw e;
+      }
+    }
+
+    // Add new events, and repair ones that are on the wrong time
     for (const [k, h] of wanted) {
-      if (existing.has(k)) continue;
-      const start = gcalDueDate(h);
-      const end = new Date(start.getTime() + 30 * 60000);
-      await gcalFetch(token, base, {
-        method: "POST",
-        body: JSON.stringify({
-          summary: h.name + " (" + h.class + ")",
-          start: { dateTime: start.toISOString(), timeZone: tz },
-          end: { dateTime: end.toISOString(), timeZone: tz },
-          reminders: { useDefault: false, overrides: [{ method: "popup", minutes: 60 }] },
-          ...(color ? { colorId: color } : {}),
-          extendedProperties: { private: { hwKey: k } },
-        }),
-      });
-      added++;
-    }
+      const times = gcalEventTimes(h, tz);
+      const ev = existing.get(k);
 
-    // Recolor events that are already there if the chosen color changed
-    let recolored = 0;
-    for (const [k, id] of existing) {
-      if (!wanted.has(k) || (existingColor.get(k) || "") === color) continue;
-      await gcalFetch(token, base + "/" + encodeURIComponent(id), {
+      if (!ev) {
+        await gcalFetch(token, base, {
+          method: "POST",
+          body: JSON.stringify({
+            summary: h.name + " (" + h.class + ")",
+            start: times.start,
+            end: times.end,
+            reminders: { useDefault: false, overrides: [{ method: "popup", minutes: 60 }] },
+            ...(color ? { colorId: color } : {}),
+            extendedProperties: { private: { hwKey: k } },
+          }),
+        });
+        added++;
+        continue;
+      }
+
+      const wrongTime = ev.startMs !== times.startMs || ev.endMs !== times.endMs;
+      const wrongColor = ev.colorId !== color;
+      if (!wrongTime && !wrongColor) continue;
+
+      const patch = {};
+      if (wrongTime) {
+        patch.start = { ...times.start, date: null }; // date: null clears an all-day value
+        patch.end = { ...times.end, date: null };
+      }
+      if (wrongColor) patch.colorId = color || null;
+
+      await gcalFetch(token, base + "/" + encodeURIComponent(ev.id), {
         method: "PATCH",
-        body: JSON.stringify({ colorId: color || null }),
+        body: JSON.stringify(patch),
       });
-      recolored++;
+      if (wrongTime) fixed++;
+      if (wrongColor) recolored++;
     }
 
-    setLabel("Synced ✓ (+" + added + " / −" + removed + (recolored ? " / " + recolored + " recolored" : "") + ")");
+    setLabel("Synced ✓ (+" + added + " / −" + removed +
+      (fixed ? " / " + fixed + " fixed" : "") +
+      (recolored ? " / " + recolored + " recolored" : "") + ")");
     localStorage.setItem("gcalLastSync", String(Date.now()));
     window.dispatchEvent(new Event("gcal-synced"));
   } catch (err) {
@@ -233,8 +355,12 @@ function gcalAutoSync() {
   gcalAutoTimer = setTimeout(() => syncToGoogleCalendar({ quiet: true }), 1500);
 }
 
+// ----- .ics fallback --------------------------------------------------------
+
 // Universal fallback: a .ics file any calendar app can import.
 // Stable UIDs mean re-importing updates events instead of duplicating them.
+// Times are written in UTC ("Z"), which is correct because they come from a
+// real local Date.
 function downloadHomeworkIcs() {
   const hw = gcalGetHomework();
   if (!hw.length) return alert("Nothing unfinished to export.");
@@ -242,12 +368,12 @@ function downloadHomeworkIcs() {
   const fmt = d =>
     d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) +
     "T" + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00Z";
-  const esc = x => String(x).replace(/[\\;,]/g, m => "\\" + m);
+  const esc = x => String(x).replace(/[\\;,]/g, m => "\\" + m).replace(/\r?\n/g, "\\n");
 
   const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//HW Tracker//EN"];
   hw.forEach(h => {
     const start = gcalDueDate(h);
-    const end = new Date(start.getTime() + 30 * 60000);
+    const end = new Date(start.getTime() + GCAL_EVENT_MINUTES * 60000);
     lines.push(
       "BEGIN:VEVENT",
       "UID:" + gcalKey(h).replace(/\W/g, "") + "@hwtracker",
