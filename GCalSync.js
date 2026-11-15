@@ -26,6 +26,9 @@ const GCAL_DEFAULT_HOUR = 23;     // no time given -> 11:59 PM
 const GCAL_DEFAULT_MINUTE = 59;
 const GCAL_EVENT_MINUTES = 30;    // event length
 
+// The Settings page checks this to make sure this file (not an older copy) loaded.
+window.GCAL_SYNC_VERSION = 2;
+
 // ----- Settings -------------------------------------------------------------
 
 // Google event color chosen in Settings ("" = the calendar's default color).

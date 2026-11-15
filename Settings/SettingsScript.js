@@ -298,31 +298,46 @@
   window.syncAssignments = syncAssignments;
   window.renderAssignments = renderAssignments;
 
-  /* ---------- Google Calendar (uses your gcal-sync.js) ---------- */
+  /* ---------- Google Calendar (uses GCalSync.js) ---------- */
+  var GCAL_VERSION_NEEDED = 2;
+
+  // GCalSync.js sets window.GCAL_SYNC_VERSION. A missing or lower number means
+  // an older copy of the file is loading (often a cached or leftover one).
+  function gcalIsCurrent() {
+    return Number(window.GCAL_SYNC_VERSION) >= GCAL_VERSION_NEEDED;
+  }
+
   var gcalBtn = $('#syncBtn');
   if (gcalBtn) {
     gcalBtn.addEventListener('click', function (e) {
-      if (typeof window.syncToGoogleCalendar === 'function') window.syncToGoogleCalendar(e);
-      else toast('gcal-sync.js did not load');
+      if (typeof window.syncToGoogleCalendar !== 'function') { toast('GCalSync.js did not load'); return; }
+      if (!gcalIsCurrent()) { refreshGcal(); toast('An old GCalSync.js is loaded'); return; }
+      window.syncToGoogleCalendar(e);
     });
   }
 
+  // One source of truth for the sign-in token: the cache GCalSync.js keeps
   function hasGcalToken() {
+    if (typeof window.gcalCachedToken === 'function') return !!window.gcalCachedToken();
     var t = readJSON(sessionStorage, 'gcalToken', null);
     return !!(t && t.exp > Date.now() + 30000);
   }
   function runGcalAuto() {
-    if (typeof window.gcalAutoSync === 'function') window.gcalAutoSync();
+    if (gcalIsCurrent() && typeof window.gcalAutoSync === 'function') window.gcalAutoSync();
   }
   function refreshGcal() {
-    var connected = !!localStorage.getItem(KEY.gcalId);
+    var linked = !!localStorage.getItem(KEY.gcalId);
+    var live = linked && hasGcalToken();
     var pill = $('#gcalPill');
-    pill.textContent = connected ? 'Connected' : 'Not connected';
-    pill.classList.toggle('on', connected);
+    pill.textContent = !linked ? 'Not connected' : live ? 'Connected' : 'Sign in to sync';
+    pill.classList.toggle('on', live);
     var last = Number(localStorage.getItem(KEY.gcalLast));
-    $('#gcalLast').textContent = last
+    var lastText = last
       ? 'Last synced ' + new Date(last).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
       : '';
+    $('#gcalLast').textContent = gcalIsCurrent()
+      ? lastText
+      : 'An old GCalSync.js is loaded. Replace the file and hard refresh.';
   }
   window.addEventListener('gcal-synced', refreshGcal);
 
@@ -341,4 +356,6 @@
   showTab();
   refreshGcal();
   runGcalAuto();
+  // The sign-in lasts about an hour, so keep the status pill honest
+  setInterval(refreshGcal, 30000);
 })();
