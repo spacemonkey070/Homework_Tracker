@@ -1,33 +1,206 @@
+/* Colors, fonts and the sidebar come from ../theme.css */
+
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "title add"
+        "switch switch"
+        "main main";
+    align-items: center;
+    column-gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
     background: var(--bg);
-    color:var(--text);
+    color: var(--text);
+    font-size: 14px;
 }
 
+.hidden { display: none !important; }
+
+/* Header */
 h1 {
-    text-align: center;
-    margin-top: 30px;
-    font-family: 'inter', sans-serif;
-    font-weight: 700;
-    color: var(--text);
-} 
+    grid-area: title;
+    margin: 0;
+    padding-left: 44px;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
 
 #add-class-btn {
-    display: block;
-    margin: 20px auto;
-    padding: 12px 25px;
-    font-size: 16px;
-    background: #7ac142;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
+    grid-area: add;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font: inherit;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-#add-class-btn:hover {
-    background: #6bb03a;
+#add-class-btn:hover { filter: brightness(1.08); }
+
+/* Classes / Weekly Schedule switch */
+#view-switch {
+    grid-area: switch;
+    justify-self: start;
+    display: inline-flex;
+    gap: 2px;
+    margin: 22px 0 6px;
+    padding: 3px;
+    background: var(--field);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+#view-switch button {
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-2);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+body:has(#classes-view:not(.hidden)) #classes-view-btn,
+body:has(#schedule-view:not(.hidden)) #schedule-view-btn {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 2px var(--shadow);
+}
+
+#classes-view,
+#schedule-view {
+    grid-area: main;
+    min-width: 0;
+}
+
+#classes-view h2,
+#schedule-view h2 {
+    margin: 18px 0 10px 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+/* Class cards */
+#class-boxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.class-box {
+    --c: #888;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--c);
+    border-radius: var(--radius);
+}
+
+.class-box-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.class-title {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.class-meta {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+}
+
+.class-meta div { display: flex; gap: 12px; }
+.class-meta dt { width: 44px; color: var(--muted); }
+.class-meta dd { margin: 0; color: var(--text-2); }
+
+.delete-class-btn {
+    padding: 2px 4px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.delete-class-btn:hover { color: var(--red); }
+
+/* Weekly schedule */
+#week-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.week-day {
+    min-height: 320px;
+    padding: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.week-day > strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.week-class-item {
+    --c: #888;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-left: 3px solid var(--c);
+    border-radius: 6px;
+    background: var(--field);
+    color: var(--text-2);
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.week-class-item strong { color: var(--text); }
+
+/* Dialogs */
+#form-overlay,
+#delete-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+#delete-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#add-class-form,
+#delete-popup {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 20px 50px var(--shadow);
+    color: var(--text);
 }
 
 #add-class-form {
@@ -35,215 +208,85 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--card);
-    padding: 20px;
-    width: 320px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px var(--shadow);
-    z-index: 1000;
-    color: var(--text);
-    border: 1px solid var(--border);
+    z-index: 1101;
+    width: min(360px, calc(100vw - 32px));
+    padding: 24px;
 }
 
-#form-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 999;
-}
-
+#add-class-form h2 { margin: 0 0 6px; font-size: 18px; }
 
 #add-class-form label {
     display: block;
-    margin-top: 10px;
-    font-weight: 600;
+    margin: 14px 0 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
 }
 
-#add-class-form input {
-    width: 95%;
-    padding: 6px;
-    margin-top: 4px;
-    background: var(--field);
+#add-class-form input[type="text"],
+#add-class-form input[type="time"] {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
     border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--field);
     color: var(--text);
-    border-radius: 6px;
+    font: inherit;
+}
+
+#add-class-form input[type="color"] {
+    width: 48px;
+    height: 38px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--field);
+    cursor: pointer;
+}
+
+#day-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
 }
 
 #day-select label {
-    font-size: 14px;
-    color: var(--text-2);
-}
-#day-select {
-    display: flex;
-    gap: 12px;
-    margin-top: 6px;
-}
-
-.hidden {
-    display: none;
-}
-
-#class-boxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.class-box {
-    width: 240px;
-    background: var(--card);
-    border-radius: 10px;
-    box-shadow: 0 0 8px var(--shadow);
-    overflow: hidden;
-    border: 1px solid var(--border);
-}
-
-.class-box-top {
-    padding: 10px;
-    background: #7ac142;
-    color: #fff;
-    font-weight: 700;
-    border-radius: 10px 10px 0 0;
-    display: flex;
-    justify-content: space-between;
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-weight: 400;
 }
 
-.class-box-content {
-    padding: 12px;
-    color: var(--text-2);
-}
-
-#week-layout {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.week-day {
-    background: var(--card);
-    padding: 10px;
-    min-height: 500px;
-    border-radius: 10px;
-    box-shadow: 0 0 5px var(--shadow);
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-.week-class-item {
-    margin-top: 8px;
-    padding: 6px;
-    border-radius: 6px;
-    background: #7ac142;
-    color: #fff;
-    font-size: 14px;
-    box-shadow: 0 0 4px rgba(0,0,0,0.3);
-}
-
-.delete-class-btn {
-    float: right;
-    background: transparent;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: #fff;
-    margin-right: 6px;
-    transition: 0.2s;
-}
-
-.delete-class-btn:hover {
-    color: #ff4d4d;
-}
-
-#delete-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
-    z-index: 200;
-    display: none;
-}
-
-#delete-overlay.show {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+#day-select input { margin: 0; accent-color: var(--accent); }
 
 #delete-popup {
-    background: var(--card);
-    padding: 20px;
-    border-radius: 10px;
-    width: 260px;
-    text-align: center;
-    box-shadow: 0 0 10px var(--shadow);
-    color: var(--text);
-    border: 1px solid var(--border);
+    width: 300px;
+    padding: 22px;
 }
 
-#confirm-delete-btn {
-    background: #ff4d4d;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    margin-right: 10px;
-    cursor: pointer;
-    border-radius: 6px;
-}
+#delete-popup h3 { margin: 0 0 6px; font-size: 16px; }
+#delete-popup p { margin: 0 0 18px; color: var(--text-2); }
 
+#save-class-btn,
+#cancel-class-btn,
+#confirm-delete-btn,
 #cancel-delete-btn {
-    background: gray;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 6px;
-}
-
-#hamburger {
-    font-size: 30px;
-    cursor: pointer;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    color: var(--text);
-}
-
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: -350px; 
-    width: 250px;
-    height: 100%;
-    background: var(--sidebar-bg);
-    box-shadow: 2px 0 5px var(--shadow);
-    padding: 20px;
-    transition: left 0.3s ease;
-    z-index: 999;
-    border-right: 1px solid var(--border);
-}
-#sidebar.open {
-    left: 0;
-}
-
-#sidebar button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    font-size: 16px;
-    background: var(--field);
-    color: var(--text);
-    border: none;
-    border-radius: 6px;
+    height: 38px;
+    padding: 0 16px;
+    margin-right: 8px;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 600;
     cursor: pointer;
 }
 
+#save-class-btn { margin-top: 20px; border: 0; background: var(--accent); color: var(--on-accent); }
+#confirm-delete-btn { border: 0; background: var(--red); color: #fff; }
+#cancel-class-btn,
+#cancel-delete-btn { border: 1px solid var(--border); background: transparent; color: var(--text); }
+
+@media (max-width: 680px) {
+    body { padding: 24px 14px 50px; }
+}

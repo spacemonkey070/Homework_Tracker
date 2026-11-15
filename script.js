@@ -210,7 +210,9 @@ function renderHW() {
             dot.className = "class-dot";
             dot.style.background = classColor;
             const label = document.createElement("span");
+            label.className = "class-label";
             label.textContent = hw.class;
+            label.title = hw.class;
             cls.append(dot, label);
         }
 
