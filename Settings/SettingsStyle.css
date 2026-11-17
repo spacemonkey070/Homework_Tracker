@@ -288,3 +288,46 @@ dialog p { margin: 0 0 8px; font-size: 15px; }
   font-weight: 700;
 }
 .sw-default[aria-pressed="true"]::after { color: var(--text); }
+
+/* Canvas token field + "?" help dialog */
+.token-row { display: flex; gap: 8px; align-items: center; }
+.token-row input { flex: 1; min-width: 0; }
+.help-btn {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--accent-ink);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.help-btn:hover { background: var(--accent-soft); }
+
+#tokenHelp {
+  padding: 0;
+  width: min(520px, calc(100vw - 32px));
+  max-width: none;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.help-body { padding: 24px; }
+.help-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.help-head h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.help-close {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+.help-steps { margin: 16px 0; padding-left: 22px; }
+.help-steps li { margin-bottom: 10px; line-height: 1.5; font-size: 15px; }
+.help-steps a { color: var(--accent-ink); }

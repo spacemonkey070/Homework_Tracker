@@ -251,34 +251,82 @@
 
   var tokenInput = $('#canvas-api-token');
   try { tokenInput.value = localStorage.getItem(KEY.canvasToken) || ''; } catch (e) {}
-  tokenInput.addEventListener('change', function () {
+
+  // Pasted tokens often pick up spaces, line breaks, quotes or a "Bearer " prefix
+  function cleanToken(value) {
+    return String(value || '')
+      .trim()
+      .replace(/^["']+|["']+$/g, '')
+      .replace(/^bearer\s+/i, '')
+      .replace(/\s+/g, '');
+  }
+
+  function saveToken() {
+    var t = cleanToken(tokenInput.value);
+    tokenInput.value = t;
     try {
-      if (tokenInput.value) localStorage.setItem(KEY.canvasToken, tokenInput.value);
+      if (t) localStorage.setItem(KEY.canvasToken, t);
       else localStorage.removeItem(KEY.canvasToken);
     } catch (e) {}
-    toast('Token saved');
+    return t;
+  }
+
+  tokenInput.addEventListener('change', function () {
+    toast(saveToken() ? 'Token saved' : 'Token removed');
   });
+
+  /* "?" walkthrough dialog */
+  var helpDlg = $('#tokenHelp');
+  function openHelp() {
+    if (typeof helpDlg.showModal === 'function') helpDlg.showModal();
+    else helpDlg.setAttribute('open', '');
+  }
+  function closeHelp() {
+    if (typeof helpDlg.close === 'function') helpDlg.close();
+    else helpDlg.removeAttribute('open');
+  }
+  $('#tokenHelpBtn').addEventListener('click', openHelp);
+  $('#tokenHelpClose').addEventListener('click', closeHelp);
+  $('#tokenHelpDone').addEventListener('click', closeHelp);
+  helpDlg.addEventListener('click', function (e) { if (e.target === helpDlg) closeHelp(); });
 
   async function syncAssignments() {
     var btn = $('#sync-assignments-btn');
+    var token = saveToken();
+    if (!token) {
+      setCanvasMsg('Paste your Canvas token first. Tap the ? if you need help getting one.', true);
+      tokenInput.focus();
+      return;
+    }
+
     btn.disabled = true;
     setCanvasMsg('Syncing\u2026');
     try {
-      var response = await fetch(CANVAS_URL);
+      var response = await fetch(CANVAS_URL, {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (response.status === 401) {
+        var badToken = new Error('Token rejected');
+        badToken.badToken = true;
+        throw badToken;
+      }
       if (!response.ok) throw new Error('Server returned ' + response.status);
 
       var assignments = await response.json();
+      if (!Array.isArray(assignments)) throw new Error('Unexpected response from the server');
       localStorage.setItem(KEY.canvas, JSON.stringify(assignments));
-      console.log('Loaded ' + assignments.length + ' assignments');
 
       renderAssignments(assignments);
-      console.log('Assignments received:', assignments);
       setCanvasMsg('Synced ' + assignments.length + ' assignments.');
       toast('Assignments synced');
       updateCount();
     } catch (error) {
       console.error('Assignment sync failed:', error);
-      setCanvasMsg('Unable to sync assignments. Check your connection and try again.', true);
+      if (error && error.badToken) {
+        setCanvasMsg('Canvas didn\u2019t accept that token. It may have a typo, expired, or been deleted. Tap the ? to make a new one.', true);
+      } else {
+        setCanvasMsg('Unable to sync assignments. Check your connection and try again.', true);
+      }
     } finally {
       btn.disabled = false;
     }

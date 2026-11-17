@@ -90,11 +90,14 @@
       <p class="muted">Pull your unfinished Canvas assignments into the tracker.</p>
       <div id="canvas-settings" class="field">
         <label for="canvas-api-token" class="t">Canvas API token</label>
-        <input type="password" id="canvas-api-token" autocomplete="off" spellcheck="false">
-        <span class="d">Saved in this browser only.</span>
+        <div class="token-row">
+          <input type="password" id="canvas-api-token" autocomplete="off" spellcheck="false" placeholder="Paste your token here">
+          <button type="button" class="help-btn" id="tokenHelpBtn" aria-label="How do I get a token?" aria-haspopup="dialog" title="How do I get a token?">?</button>
+        </div>
+        <span class="d">Saved in this browser. It is sent to the tracker’s server only when you sync.</span>
       </div>
       <div class="actions">
-        <button type="button" class="btn" id="sync-assignments-btn">Sync Selected Courses</button>
+        <button type="button" class="btn" id="sync-assignments-btn">Sync assignments</button>
       </div>
       <p class="msg" id="canvasMsg" role="status" aria-live="polite"></p>
     </section>
@@ -167,6 +170,29 @@
       <button type="submit" value="ok" class="btn" id="confirmOk">Confirm</button>
     </div>
   </form>
+</dialog>
+
+<dialog id="tokenHelp" aria-labelledby="tokenHelpTitle">
+  <div class="help-body">
+    <div class="help-head">
+      <h2 id="tokenHelpTitle">Get your Canvas token</h2>
+      <button type="button" class="help-close" id="tokenHelpClose" aria-label="Close">&times;</button>
+    </div>
+    <p class="muted">A token lets the tracker read your assignments from Canvas. It takes about a minute and is easiest on a computer.</p>
+    <ol class="help-steps">
+      <li><strong>Log in to Canvas.</strong> <a href="https://lawrencetech.instructure.com/profile/settings" target="_blank" rel="noopener">Open my Canvas settings</a> (opens in a new tab).</li>
+      <li>If you land somewhere else, click <strong>Account</strong> in the left menu, then <strong>Settings</strong>.</li>
+      <li>Scroll down to <strong>Approved Integrations</strong> and click <strong>+ New Access Token</strong>.</li>
+      <li>Next to <strong>Purpose</strong>, type <em>HW Tracker</em>. Leave <strong>Expires</strong> blank, or pick a date after the semester ends.</li>
+      <li>Click <strong>Generate Token</strong>.</li>
+      <li><strong>Copy the token now.</strong> Select the whole long string and copy it. Canvas only shows it once, so if you lose it, just make a new one.</li>
+      <li>Come back here, paste it into the token box, and click <strong>Sync assignments</strong>.</li>
+    </ol>
+    <p class="note">Treat your token like a password and don’t share it. If it ever leaks, delete it under Approved Integrations in Canvas and make a new one. If you don’t see <strong>+ New Access Token</strong>, your school may have turned it off, and Canvas support can help.</p>
+    <div class="actions">
+      <button type="button" class="btn" id="tokenHelpDone">Got it</button>
+    </div>
+  </div>
 </dialog>
 
 <div id="toast" role="status" aria-live="polite"></div>
