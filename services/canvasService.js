@@ -1,16 +1,30 @@
 require("dotenv").config();
 
-const headers = { Authorization: `Bearer ${process.env.CANVAS_TOKEN}` };
+// Every call gets the token of the person using the site.
+// Nothing here reads CANVAS_TOKEN from the server's environment anymore.
+function authHeaders(token) {
+  if (!token) {
+    const err = new Error("Missing Canvas token");
+    err.status = 401;
+    throw err;
+  }
+  return { Authorization: `Bearer ${token}` };
+}
 
 // follows Canvas pagination via the Link header
-async function canvasFetchAll(path) {
+async function canvasFetchAll(path, token) {
+  const headers = authHeaders(token);
   let url = `${process.env.CANVAS_URL}${path}`;
   const results = [];
 
   while (url) {
     const response = await fetch(url, { headers });
     if (!response.ok) {
-      throw new Error(`Canvas ${response.status} for ${url}`);
+      // status is kept on the error so server.js can tell a bad token (401)
+      // apart from other failures
+      const err = new Error(`Canvas ${response.status} for ${path}`);
+      err.status = response.status;
+      throw err;
     }
     const data = await response.json();
     results.push(...data);
@@ -23,21 +37,23 @@ async function canvasFetchAll(path) {
   return results;
 }
 
-async function getCourses() {
+async function getCourses(token) {
   const courses = await canvasFetchAll(
-    "/api/v1/courses?enrollment_state=active&per_page=100"
+    "/api/v1/courses?enrollment_state=active&per_page=100",
+    token
   );
   return courses.filter(c => c.id && c.name); // drop restricted stubs
 }
 
-async function getAssignments() {
-  const courses = await getCourses();
+async function getAssignments(token) {
+  const courses = await getCourses(token);
   const allAssignments = [];
 
   for (const course of courses) {
     try {
       const assignments = await canvasFetchAll(
-        `/api/v1/courses/${course.id}/assignments?per_page=100&include[]=submission&include[]=all_dates`
+        `/api/v1/courses/${course.id}/assignments?per_page=100&include[]=submission&include[]=all_dates`,
+        token
       );
 
       console.log(`${course.name}: ${assignments.length} assignments`);
